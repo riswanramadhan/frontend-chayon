@@ -6,17 +6,16 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const Home = () => {
-  // Add router for navigation
-  const router = typeof window !== 'undefined' ? { 
-    push: (path: string) => { window.location.href = path } 
-  } : null;
+  // Use Next.js's router for navigation
+  const router = useRouter();
 
-  // Data Blog Utama with ID
+  // Data Blog Utama with slug instead of ID
   const mainBlog = {
-    id: 'machine-learning-data-intelligence',
+    slug: 'machine-learning-data-intelligence',
     title: "Machine Learning: Mengubah Data Menjadi Kecerdasan Buatan yang Bermanfaat",
     description: "Pelajari bagaimana Machine Learning bekerja dalam mengolah data, mengenali pola, dan membuat keputusan cerdas. Dari teori hingga aplikasi nyata, temukan cara teknologi ini membentuk masa depan!",
     category: "Machine Learning",
@@ -24,25 +23,25 @@ const Home = () => {
     image: "/nlp.svg",
   };
 
-  // Data Blog Kecil with unique IDs categorized by type
+  // Data Blog Kecil with slugs instead of IDs categorized by type
   const blogsByCategory = {
     'digital-marketing': [
-      { id: 'audience-reach', title: "Menjangkau Audiens dan Meningkatkan Penjualan", category: "Digital Marketing", date: "11 Apr 2025", image: "/keyboard.svg", description: "Pelajari strategi pemasaran digital untuk meningkatkan jangkauan pasar dan mengoptimalkan penjualan produk digital." }
+      { slug: 'menjangkau-audiens-dan-meningkatkan-penjualan', title: "Menjangkau Audiens dan Meningkatkan Penjualan", category: "Digital Marketing", date: "11 Apr 2025", image: "/keyboard.svg", description: "Pelajari strategi pemasaran digital untuk meningkatkan jangkauan pasar dan mengoptimalkan penjualan produk digital." }
     ],
     'machine-learning': [
-      { id: 'future-tech', title: "Masa Depan Teknologi yang Harus Kamu Kuasai", category: "Machine Learning", date: "10 Apr 2025", image: "/ddos.svg", description: "Pelajari teknologi terkini yang akan membentuk masa depan dan bagaimana kamu bisa mempersiapkan diri untuk menghadapi perkembangan teknologi yang semakin pesat." }
+      { slug: 'masa-depan-teknologi-yang-harus-kamu-kuasai', title: "Masa Depan Teknologi yang Harus Kamu Kuasai", category: "Machine Learning", date: "10 Apr 2025", image: "/ddos.svg", description: "Pelajari teknologi terkini yang akan membentuk masa depan dan bagaimana kamu bisa mempersiapkan diri untuk menghadapi perkembangan teknologi yang semakin pesat." }
     ],
     'jenjang-karir': [
-      { id: 'success-strategy', title: "Langkah Strategis Menuju Sukses", category: "Jenjang Karir", date: "8 Apr 2025", image: "/wordle.svg", description: "Pelajari strategi menyeluruh untuk membangun karir yang sukses di dunia teknologi dan mengembangkan potensi maksimal." }
+      { slug: 'langkah-strategis-menuju-sukses', title: "Langkah Strategis Menuju Sukses", category: "Jenjang Karir", date: "8 Apr 2025", image: "/wordle.svg", description: "Pelajari strategi menyeluruh untuk membangun karir yang sukses di dunia teknologi dan mengembangkan potensi maksimal." }
     ],
     'melamar-kerja': [
-      { id: 'job-application-secrets', title: "Rahasia Sukses Melamar Kerja di Era Digital", category: "Melamar Kerja", date: "5 Apr 2025", image: "/notes.svg", description: "Dapatkan tips memaksimalkan profil digital dan strategi melamar kerja yang berhasil di lingkungan kerja modern." }
+      { slug: 'rahasia-sukses-melamar-kerja-di-era-digital', title: "Rahasia Sukses Melamar Kerja di Era Digital", category: "Melamar Kerja", date: "5 Apr 2025", image: "/notes.svg", description: "Dapatkan tips memaksimalkan profil digital dan strategi melamar kerja yang berhasil di lingkungan kerja modern." }
     ],
     'ui-ux': [
-      { id: 'user-design', title: "Desain Pengguna dengan Produk Digital", category: "UI/UX Design", date: "2 Apr 2025", image: "/browser.svg", description: "Pelajari cara mendesain pengalaman pengguna lebih efektif dan menciptakan produk digital yang bermanfaat bagi pengguna." }
+      { slug: 'desain-pengguna-dengan-produk-digital', title: "Desain Pengguna dengan Produk Digital", category: "UI/UX Design", date: "2 Apr 2025", image: "/browser.svg", description: "Pelajari cara mendesain pengalaman pengguna lebih efektif dan menciptakan produk digital yang bermanfaat bagi pengguna." }
     ],
     'lintas-minat': [
-      { id: 'career-change', title: "Berkarir di Bidang yang Berbeda? Berani untuk Mencoba", category: "Lintas Minat", date: "30 Mar 2025", image: "/hacking.svg", description: "Pelajari jalur karier bidang teknologi yang berbeda untuk memperluas peluang jika keinginan untuk beralih profesi muncul." }
+      { slug: 'berkarir-di-bidang-yang-berbeda-berani-untuk-mencoba', title: "Berkarir di Bidang yang Berbeda? Berani untuk Mencoba", category: "Lintas Minat", date: "30 Mar 2025", image: "/hacking.svg", description: "Pelajari jalur karier bidang teknologi yang berbeda untuk memperluas peluang jika keinginan untuk beralih profesi muncul." }
     ]
   };
 
@@ -104,11 +103,9 @@ const Home = () => {
   const [selectedJourneyCategory, setSelectedJourneyCategory] = useState<string>('all');
   const [currentJourneyPage, setCurrentJourneyPage] = useState(1);
   
-  // Function to handle blog click
-  const handleBlogClick = (blogId: string) => {
-    if (router) {
-      router.push(`/blog/${blogId}`);
-    }
+  // Function to handle blog click - updated to use slug
+  const handleBlogClick = (slug: string) => {
+    router.push(`/blog/${slug}`);
   };
 
   // Function to filter blogs based on selected category
@@ -129,7 +126,7 @@ const Home = () => {
       
   // If the main blog is now one of the filtered blogs, remove it from the list to avoid duplication
   const displayedSecondaryBlogs = displayedMainBlog !== mainBlog && filteredBlogs.includes(displayedMainBlog)
-    ? filteredBlogs.filter(blog => blog.id !== displayedMainBlog.id)
+    ? filteredBlogs.filter(blog => blog.slug !== displayedMainBlog.slug)
     : filteredBlogs;
 
   // Filter learning journey courses
@@ -219,15 +216,12 @@ const Home = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-3">{displayedMainBlog.title}</h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">{displayedMainBlog.description}</p>
-                <button 
-                  onClick={() => handleBlogClick(displayedMainBlog.id)}
-                  className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
-                >
+                <Link href={`/blog/${displayedMainBlog.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
                   Baca Selengkapnya
                   <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
                   </svg>
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -235,27 +229,28 @@ const Home = () => {
           {/* Blog Cards Grid - Using filtered blogs that don't include the main blog */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {displayedSecondaryBlogs.slice(0, 6).map((blog) => (
-              <div key={blog.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => handleBlogClick(blog.id)}>
-                <div className="relative h-48">
-                  <Image
-                    src={blog.image}
-                    alt={blog.title}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">{blog.category}</span>
-                    <span className="text-xs text-gray-500">{blog.date}</span>
+              <div key={blog.slug} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full cursor-pointer hover:shadow-md transition-shadow">
+                <Link href={`/blog/${blog.slug}`} className="block h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src={blog.image}
+                      alt={blog.title}
+                      layout="fill"
+                      objectFit="cover"
+                    />
                   </div>
-                  <h3 className="font-bold mb-2 line-clamp-2">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3 line-clamp-2">{blog.description}</p>
-                  <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                    Baca Selengkapnya
-                  </button>
-                </div>
+                  <div className="p-4 flex flex-col flex-grow">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">{blog.category}</span>
+                      <span className="text-xs text-gray-500">{blog.date}</span>
+                    </div>
+                    <h3 className="font-bold mb-2 line-clamp-2">{blog.title}</h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{blog.description}</p>
+                    <span className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-auto">
+                      Baca Selengkapnya
+                    </span>
+                  </div>
+                </Link>
               </div>
             ))}
           </div>
@@ -338,12 +333,9 @@ const Home = () => {
                     </div>
                     <h3 className="text-xl font-bold mb-3">{course.title}</h3>
                     <p className="text-gray-600 mb-5 line-clamp-3">{course.description}</p>
-                    <button 
-                      className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                      onClick={() => router?.push(`/course/${course.id}`)}
-                    >
+                    <Link href={`/courses/${course.category.toLowerCase().replace(/[\s/]+/g, '-')}`} className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">
                       Daftar Sekarang
-                    </button>
+                    </Link>
                   </div>
                 </div>
               ))}

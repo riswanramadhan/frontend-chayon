@@ -55,9 +55,9 @@ const Navbar = () => {
             </button>
             {openDropdown === 'bidang' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100">Digital Marketing</Link>
-                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100">Machine Learning</Link>
-                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100">UI/UX Design</Link>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</button>
               </div>
             )}
           </li>
@@ -73,9 +73,9 @@ const Navbar = () => {
             </button>
             {openDropdown === 'panduan' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100">Digital Marketing</Link>
-                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100">Machine Learning</Link>
-                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100">UI/UX Design</Link>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</button>
               </div>
             )}
           </li>
@@ -91,9 +91,9 @@ const Navbar = () => {
             </button>
             {openDropdown === 'karir' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Melamar Kerja</Link>
-                <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Lintas Minat</Link>
-                <Link href="#" className="block px-4 py-2 hover:bg-gray-100">Jenjang Karir</Link>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Melamar Kerja</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Lintas Minat</button>
+                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Jenjang Karir</button>
               </div>
             )}
           </li>

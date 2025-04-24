@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Update to next/navigation for App Router
 
 interface Blog {
-  id: string; // Add ID field
+  slug: string; // Changed from id to slug to match our articles data structure
   title: string;
   description?: string;
   category: string;
@@ -16,7 +17,7 @@ interface BlogCardProps {
   buttonText?: string;
   buttonColor?: string;
   textColor?: string;
-  onBlogClick?: (id: string) => void; // Add click handler prop
+  onBlogClick?: (slug: string) => void; // Updated to use slug
 }
 
 const BlogCard = ({ 
@@ -28,10 +29,16 @@ const BlogCard = ({
   onBlogClick
 }: BlogCardProps) => {
   
-  const handleReadMore = (id: string, e: React.MouseEvent) => {
+  const router = useRouter();
+  
+  const handleReadMore = (slug: string, e: React.MouseEvent) => {
     if (onBlogClick) {
       e.preventDefault();
-      onBlogClick(id);
+      onBlogClick(slug);
+    } else {
+      // If no click handler provided, navigate directly
+      e.preventDefault();
+      router.push(`/blog/${slug}`);
     }
   };
 
@@ -50,9 +57,9 @@ const BlogCard = ({
               </div>
               <h2 className="text-2xl font-bold mb-4">{mainBlog.title}</h2>
               <p className="text-gray-600 mb-6">{mainBlog.description}</p>
-              <Link href={`/blog/${mainBlog.id}`} passHref>
+              <Link href={`/blog/${mainBlog.slug}`} passHref>
                 <button 
-                  onClick={(e) => handleReadMore(mainBlog.id, e)}
+                  onClick={(e) => handleReadMore(mainBlog.slug, e)}
                   className={`inline-flex items-center px-4 py-2 rounded-md bg-${buttonColor} text-${textColor} hover:bg-gray-100`}
                 >
                   {buttonText}
@@ -94,9 +101,9 @@ const BlogCard = ({
                 <span className="text-gray-500 text-sm">{blog.date}</span>
               </div>
               <h3 className="text-xl font-bold mb-4">{blog.title}</h3>
-              <Link href={`/blog/${blog.id}`} passHref>
+              <Link href={`/blog/${blog.slug}`} passHref>
                 <button 
-                  onClick={(e) => handleReadMore(blog.id, e)}
+                  onClick={(e) => handleReadMore(blog.slug, e)}
                   className={`inline-flex items-center px-4 py-2 rounded-md bg-${buttonColor} text-${textColor} hover:bg-gray-100`}
                 >
                   {buttonText}

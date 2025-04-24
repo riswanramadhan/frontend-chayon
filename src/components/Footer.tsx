@@ -10,7 +10,9 @@ const Footer = () => {
         <div className="flex justify-between items-center w-full mb-10">
           {/* Logo (Rata Kiri) */}
           <div className="flex-1">
+          <a href="/" className="hover:text-gray-900">
             <Image src="/logo.svg" width={340} height={80} alt="Chayon Online Course" />
+          </a>
           </div>
           
           {/* Navigation Links (Semi-Tengah) */}
