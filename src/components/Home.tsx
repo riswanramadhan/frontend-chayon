@@ -1,18 +1,13 @@
 import Navbar from './Navbar'
-import BlogCard from './BlogCard'
 import CategoryBar from './CategoryBar'
 import Footer from './Footer'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const Home = () => {
-  // Use Next.js's router for navigation
-  const router = useRouter();
-
   // Data Blog Utama with slug instead of ID
   const mainBlog = {
     slug: 'machine-learning-data-intelligence',
@@ -103,10 +98,6 @@ const Home = () => {
   const [selectedJourneyCategory, setSelectedJourneyCategory] = useState<string>('all');
   const [currentJourneyPage, setCurrentJourneyPage] = useState(1);
   
-  // Function to handle blog click - updated to use slug
-  const handleBlogClick = (slug: string) => {
-    router.push(`/blog/${slug}`);
-  };
 
   // Function to filter blogs based on selected category
   const filteredBlogs = selectedBlogCategory === 'all' 

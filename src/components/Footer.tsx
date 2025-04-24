@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 const Footer = () => {
   return (
@@ -10,22 +11,23 @@ const Footer = () => {
         <div className="flex justify-between items-center w-full mb-10">
           {/* Logo (Rata Kiri) */}
           <div className="flex-1">
-          <a href="/" className="hover:text-gray-900">
+          <Link href="/" className="hover:text-gray-900">
             <Image src="/logo.svg" width={340} height={80} alt="Chayon Online Course" />
-          </a>
+          </Link>
           </div>
           
           {/* Navigation Links (Semi-Tengah) */}
           <nav className="flex justify-center pl-20 space-x-10 text-gray-600">
-            <a href="#" className="hover:text-gray-900">Chayon Online Course</a>
-            <a href="#" className="hover:text-gray-900">Our Story</a>
-            <a href="#" className="hover:text-gray-900">Blog</a>
-            <a href="#" className="hover:text-gray-900">Careers</a>
-            <a href="#" className="hover:text-gray-900">Contact Us</a>
+            <Link href="/" className="hover:text-gray-900">Chayon Online Course</Link>
+            <Link href="/our-story" className="hover:text-gray-900">Our Story</Link>
+            <Link href="/blog" className="hover:text-gray-900">Blog</Link>
+            <Link href="/careers" className="hover:text-gray-900">Careers</Link>
+            <Link href="/contact" className="hover:text-gray-900">Contact Us</Link>
           </nav>
           
           {/* Social Media Icons (Rata Kanan) */}
           <div className="flex-1 flex justify-end space-x-4">
+            {/* External links can remain as <a> tags */}
             <a href="#" className="hover:text-gray-900">
               <Image src="/facebook.svg" width={30} height={30} alt="Facebook" />
             </a>
@@ -45,9 +47,9 @@ const Footer = () => {
           
           {/* Link (Rata Kanan) */}
           <div className="flex-1 flex justify-end space-x-6">
-            <a href="#" className="hover:text-gray-900">Privacy Policy</a>
-            <a href="#" className="hover:text-gray-900">Terms of Service</a>
-            <a href="#" className="hover:text-gray-900">Cookies Settings</a>
+            <Link href="/privacy" className="hover:text-gray-900">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-gray-900">Terms of Service</Link>
+            <Link href="/cookies" className="hover:text-gray-900">Cookies Settings</Link>
           </div>
         </div>
 

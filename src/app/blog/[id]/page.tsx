@@ -5,8 +5,16 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getArticleBySlug, getRelatedArticles } from '@/lib/articles';
 
+// Define types for params
+type Params = Promise<{ id: string }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
 // Dynamic metadata for SEO
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata(props: {
+  params: Params
+  searchParams?: SearchParams
+}) {
+  const params = await props.params;
   // Find the blog post from our data source using the slug
   // For a real app, this would be a database or CMS call
   let blogData;
@@ -36,8 +44,12 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-// For improved SEO, rename the parameter but keep the filename as [id]
-export default function BlogPost({ params }: { params: { id: string } }) {
+// Update type definition to match new Next.js App Router requirements
+export default async function BlogPost(props: {
+  params: Params
+  searchParams?: SearchParams
+}) {
+  const params = await props.params;
   // The 'id' parameter is now actually the slug derived from the title
   const slug = params.id;
   
