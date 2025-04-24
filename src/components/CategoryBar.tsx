@@ -1,47 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 
-const defaultCategories = [
-  "Digital Marketing",
-  "Machine Learning",
-  "UI/UX Design",
-  "Melamar Kerja",
-  "Lintas Minat",
-  "Jenjang Karir",
-];
-
-interface CategoryBarProps {
-  onCategorySelect: (category: string | null) => void;
+interface Category {
+  id: string;
+  name: string;
 }
 
-const CategoryBar: React.FC<CategoryBarProps> = ({ onCategorySelect }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+interface CategoryBarProps {
+  categories: Category[];
+  selectedCategory: string;
+  onCategoryChange: (category: string) => void;
+}
 
-  const handleCategoryClick = (category: string | null) => {
-    setSelectedCategory(category);
-    onCategorySelect(category);
-  };
-
+const CategoryBar: React.FC<CategoryBarProps> = ({ 
+  categories, 
+  selectedCategory, 
+  onCategoryChange 
+}) => {
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex justify-center mt-8 overflow-x-auto">
       <div className="flex items-center bg-white shadow-md rounded-lg border border-gray-200 px-4 py-2 space-x-6">
-        <button
-          className={'px-4 py-2 rounded-md font-bold transition-all ${selectedCategory === null ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"}'}
-          onClick={() => handleCategoryClick(null)}
-        >
-          View all
-        </button>
-
-        {defaultCategories.map((category) => (
+        {categories.map((category) => (
           <button
-            key={category}
-            onClick={() => handleCategoryClick(category)}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${
-                selectedCategory === category
-                  ? "bg-blue-500 text-white shadow-md"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+            key={category.id}
+            onClick={() => onCategoryChange(category.id)}
+            className={`px-4 py-2 rounded-md font-medium transition-all whitespace-nowrap ${
+              selectedCategory === category.id
+                ? "bg-blue-500 text-white shadow-md"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>

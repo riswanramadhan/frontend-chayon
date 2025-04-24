@@ -1,0 +1,171 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+
+export default function MachineLearning() {
+  return (
+    <>
+      <Navbar />
+      <main>
+        {/* Hero Section */}
+        <div className="bg-gray-50 py-12 px-16">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center mb-4">
+              <span className="bg-black text-white text-xs px-3 py-1 rounded-md mr-3">Machine Learning</span>
+              <span className="text-xs text-gray-600">FREE REGISTER</span>
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-12">Mulai dari Nol! Kuasai Dasar-Dasar Machine Learning</h1>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-blue-50 p-6 rounded-lg shadow-md">
+                <Image 
+                  src="/nlp.svg" 
+                  width={400} 
+                  height={300} 
+                  alt="Machine Learning Illustration" 
+                  className="mx-auto" 
+                />
+              </div>
+              
+              <div className="bg-gray-100 p-8 rounded-lg">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Tentang Mulai dari Nol! Kuasai Dasar-Dasar Machine Learning</h2>
+                
+                <p className="text-gray-700 mb-6">
+                  Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karir di bidang AI.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-md mr-2">
+                      <Image src="/book.svg" width={16} height={16} alt="Course" />
+                    </div>
+                    <span className="text-sm">4 Course</span>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-md mr-2">
+                      <Image src="/timer.svg" width={16} height={16} alt="Duration" />
+                    </div>
+                    <span className="text-sm">15h 11m</span>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-md mr-2">
+                      <Image src="/video.svg" width={16} height={16} alt="Video" />
+                    </div>
+                    <span className="text-sm">60 Video</span>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-md mr-2">
+                      <Image src="/file.svg" width={16} height={16} alt="Quiz" />
+                    </div>
+                    <span className="text-sm">25 Kuis</span>
+                  </div>
+                </div>
+                
+                <Link href="#" className="block w-full bg-black text-white text-center py-3 rounded-md font-medium">
+                  Daftar Sekarang
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Other Courses Section */}
+        <div className="py-16 px-16">
+          <h2 className="text-3xl font-bold mb-8">Other Courses</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Digital Marketing Course Card */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full">
+              <div className="p-6 bg-purple-50">
+                <Image 
+                  src="/keyboard.svg" 
+                  width={300} 
+                  height={250} 
+                  alt="Digital Marketing" 
+                  className="mx-auto" 
+                />
+              </div>
+              
+              <div className="p-6 flex flex-col flex-grow">
+                <div>
+                  <div className="flex items-center mb-2">
+                    <span className="bg-black text-white text-xs px-2 py-1 rounded-md mr-2">Digital Marketing</span>
+                    <span className="text-xs text-gray-600">Free Register</span>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2">Bangun Brand dan Tingkatkan Penjualan</h3>
+                  <p className="text-sm text-gray-600 mb-4">Pelajari SEO, strategi media sosial, dan iklan digital untuk pemasaran yang efektif.</p>
+                </div>
+                
+                <div className="mt-auto pt-4">
+                  <Link href="/courses/digital-marketing" className="block w-full bg-black text-white text-center py-3 rounded-md font-medium">
+                    Daftar Sekarang
+                  </Link>
+                </div>
+              </div>
+            </div>
+            
+            {/* UI/UX Design Course Card */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-md flex flex-col h-full">
+              <div className="p-6 bg-green-50">
+                <Image 
+                  src="/browser.svg" 
+                  width={300} 
+                  height={250} 
+                  alt="UI/UX Design" 
+                  className="mx-auto" 
+                />
+              </div>
+              
+              <div className="p-6 flex flex-col flex-grow">
+                <div>
+                  <div className="flex items-center mb-2">
+                    <span className="bg-black text-white text-xs px-2 py-1 rounded-md mr-2">UI/UX Design</span>
+                    <span className="text-xs text-gray-600">Paid Register</span>
+                  </div>
+                  
+                  <h3 className="text-xl font-bold mb-2">Menciptakan Produk Digital yang Menarik</h3>
+                  <p className="text-sm text-gray-600 mb-4">Pelajari prinsip desain antarmuka dan pengalaman pengguna untuk produk yang lebih baik.</p>
+                </div>
+                
+                <div className="mt-auto pt-4">
+                  <Link href="/courses/ui-ux-design" className="block w-full bg-black text-white text-center py-3 rounded-md font-medium">
+                    Daftar Sekarang
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Newsletter Section */}
+        <div className="bg-white py-16 px-16">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div>
+                <h2 className="text-3xl font-bold mb-2">Stay up to date!</h2>
+                <p className="text-gray-600">Subscribe to our newsletter to get inbox notifications.</p>
+              </div>
+              
+              <div className="mt-6 md:mt-0 flex w-full md:w-auto">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email" 
+                  className="px-4 py-3 border border-gray-300 rounded-l-md w-full md:w-64" 
+                />
+                <button className="bg-blue-600 text-white px-4 py-3 rounded-r-md">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
