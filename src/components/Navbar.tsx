@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 
 const Navbar = () => {
@@ -17,18 +17,20 @@ const Navbar = () => {
     setOpenDropdown(openDropdown === menu ? null : menu);
   };
 
-  const handleMouseEnter = (menu: string) => {
-    setOpenDropdown(menu);
-  };
-
-  const handleMouseLeave = (menu: string) => {
-    // Only close if we're actually leaving the entire dropdown area
-    requestAnimationFrame(() => {
-      if (dropdownRefs.current[menu] && !dropdownRefs.current[menu]?.matches(':hover')) {
-        setOpenDropdown(null);
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (openDropdown) {
+        const currentRef = dropdownRefs.current[openDropdown];
+        if (currentRef && !currentRef.contains(event.target as Node)) {
+          setOpenDropdown(null);
+        }
       }
-    });
-  };
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openDropdown]);
 
   return (
     <nav className="bg-white shadow-md py-4 sticky top-0 z-50 px-16">
@@ -47,17 +49,15 @@ const Navbar = () => {
           <li 
             className="relative" 
             ref={el => { dropdownRefs.current.bidang = el; }}
-            onMouseEnter={() => handleMouseEnter('bidang')} 
-            onMouseLeave={() => handleMouseLeave('bidang')}
           >
             <button onClick={() => toggleDropdown('bidang')} className="flex items-center gap-2">
               Mengenal Bidang <ChevronDown size={16} className={`transition-transform ${openDropdown === 'bidang' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'bidang' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</button>
+                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
+                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
+                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
               </div>
             )}
           </li>
@@ -65,17 +65,15 @@ const Navbar = () => {
           <li 
             className="relative" 
             ref={el => { dropdownRefs.current.panduan = el; }}
-            onMouseEnter={() => handleMouseEnter('panduan')} 
-            onMouseLeave={() => handleMouseLeave('panduan')}
           >
             <button onClick={() => toggleDropdown('panduan')} className="flex items-center gap-2">
               Panduan Belajar <ChevronDown size={16} className={`transition-transform ${openDropdown === 'panduan' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'panduan' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</button>
+                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
+                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
+                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
               </div>
             )}
           </li>
@@ -83,17 +81,15 @@ const Navbar = () => {
           <li 
             className="relative" 
             ref={el => { dropdownRefs.current.karir = el; }}
-            onMouseEnter={() => handleMouseEnter('karir')} 
-            onMouseLeave={() => handleMouseLeave('karir')}
           >
             <button onClick={() => toggleDropdown('karir')} className="flex items-center gap-2">
               Tips Berkarir <ChevronDown size={16} className={`transition-transform ${openDropdown === 'karir' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'karir' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Melamar Kerja</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Lintas Minat</button>
-                <button className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Jenjang Karir</button>
+                <Link href="/karir/melamar-kerja" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Melamar Kerja</Link>
+                <Link href="/karir/lintas-minat" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Lintas Minat</Link>
+                <Link href="/karir/jenjang-karir" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Jenjang Karir</Link>
               </div>
             )}
           </li>

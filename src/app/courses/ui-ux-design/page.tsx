@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import { Newsletter } from '@/components/ui/Newsletter'
 
 export default function UiUxDesign() {
   return (
@@ -141,30 +142,8 @@ export default function UiUxDesign() {
             </div>
           </div>
         </div>
-        
-        {/* Newsletter Section */}
-        <div className="bg-white py-16 px-16">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Stay up to date!</h2>
-                <p className="text-gray-600">Subscribe to our newsletter to get inbox notifications.</p>
-              </div>
-              
-              <div className="mt-6 md:mt-0 flex w-full md:w-auto">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email" 
-                  className="px-4 py-3 border border-gray-300 rounded-l-md w-full md:w-64" 
-                />
-                <button className="bg-blue-600 text-white px-4 py-3 rounded-r-md">
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
+      <Newsletter />
       <Footer />
     </>
   );

@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import Navbar from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Newsletter } from '@/components/ui/Newsletter'
 
 export default function AboutPage() {
   return (
@@ -121,7 +122,7 @@ export default function AboutPage() {
                   src="/group.png" 
                   alt="People working together"
                   width={600}
-                  height={400}
+                  height={350}
                   className="rounded-lg"
                 />
               </div>
@@ -196,25 +197,9 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
-        {/* Newsletter */}
-        <section className="container mx-auto px-4 mb-16">
-          <div className="bg-white py-8 px-4 rounded-lg border border-gray-200">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
-              <div className="mb-4 md:mb-0">
-                <h3 className="text-xl font-bold mb-1">Stay up to date!</h3>
-                <p className="text-sm text-gray-600">Subscribe to our newsletter to get latest notifications.</p>
-              </div>
-              <div className="flex w-full md:w-auto">
-                <Input placeholder="Enter your email" className="rounded-r-none border-r-0 focus:ring-[#000aff]" />
-                <Button className="rounded-l-none bg-[#000aff] hover:bg-[#0008df]">Subscribe</Button>
-              </div>
-            </div>
-          </div>
-        </section>
       </main>
-      
+      <Newsletter />
       <Footer />
     </>
   );
-};
+}
