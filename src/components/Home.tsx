@@ -2,11 +2,12 @@ import Navbar from './Navbar'
 import CategoryBar from './CategoryBar'
 import Footer from './Footer'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from 'next/link'
 import { Newsletter } from "@/components/ui/Newsletter"
+import Head from 'next/head'
 
 const Home = () => {
   // Data Blog Utama with slug instead of ID
@@ -17,27 +18,28 @@ const Home = () => {
     category: "Machine Learning",
     date: "12 Apr 2025",
     image: "/nlp.svg",
+    tags: ['AI', 'Machine Learning'] // <-- add this line
   };
 
   // Data Blog Kecil with slugs instead of IDs categorized by type
   const blogsByCategory = {
     'digital-marketing': [
-      { slug: 'menjangkau-audiens-dan-meningkatkan-penjualan', title: "Menjangkau Audiens dan Meningkatkan Penjualan", category: "Digital Marketing", date: "11 Apr 2025", image: "/keyboard.svg", description: "Pelajari strategi pemasaran digital untuk meningkatkan jangkauan pasar dan mengoptimalkan penjualan produk digital." }
+      { slug: 'menjangkau-audiens-dan-meningkatkan-penjualan', title: "Menjangkau Audiens dan Meningkatkan Penjualan", category: "Digital Marketing", date: "11 Apr 2025", image: "/keyboard.svg", description: "Pelajari strategi pemasaran digital untuk meningkatkan jangkauan pasar dan mengoptimalkan penjualan produk digital.", tags: ['Marketing', 'Digital'] }
     ],
     'machine-learning': [
-      { slug: 'masa-depan-teknologi-yang-harus-kamu-kuasai', title: "Masa Depan Teknologi yang Harus Kamu Kuasai", category: "Machine Learning", date: "10 Apr 2025", image: "/ddos.svg", description: "Pelajari teknologi terkini yang akan membentuk masa depan dan bagaimana kamu bisa mempersiapkan diri untuk menghadapi perkembangan teknologi yang semakin pesat." }
+      { slug: 'masa-depan-teknologi-yang-harus-kamu-kuasai', title: "Masa Depan Teknologi yang Harus Kamu Kuasai", category: "Machine Learning", date: "10 Apr 2025", image: "/ddos.svg", description: "Pelajari teknologi terkini yang akan membentuk masa depan dan bagaimana kamu bisa mempersiapkan diri untuk menghadapi perkembangan teknologi yang semakin pesat.", tags: ['AI', 'Machine Learning'] }
     ],
     'jenjang-karir': [
-      { slug: 'langkah-strategis-menuju-sukses', title: "Langkah Strategis Menuju Sukses", category: "Jenjang Karir", date: "8 Apr 2025", image: "/wordle.svg", description: "Pelajari strategi menyeluruh untuk membangun karir yang sukses di dunia teknologi dan mengembangkan potensi maksimal." }
+      { slug: 'langkah-strategis-menuju-sukses', title: "Langkah Strategis Menuju Sukses", category: "Jenjang Karir", date: "8 Apr 2025", image: "/wordle.svg", description: "Pelajari strategi menyeluruh untuk membangun karir yang sukses di dunia teknologi dan mengembangkan potensi maksimal.", tags: ['Karir'] }
     ],
     'melamar-kerja': [
-      { slug: 'rahasia-sukses-melamar-kerja-di-era-digital', title: "Rahasia Sukses Melamar Kerja di Era Digital", category: "Melamar Kerja", date: "5 Apr 2025", image: "/notes.svg", description: "Dapatkan tips memaksimalkan profil digital dan strategi melamar kerja yang berhasil di lingkungan kerja modern." }
+      { slug: 'rahasia-sukses-melamar-kerja-di-era-digital', title: "Rahasia Sukses Melamar Kerja di Era Digital", category: "Melamar Kerja", date: "5 Apr 2025", image: "/notes.svg", description: "Dapatkan tips memaksimalkan profil digital dan strategi melamar kerja yang berhasil di lingkungan kerja modern.", tags: ['Karir', 'Digital'] }
     ],
     'ui-ux': [
-      { slug: 'desain-pengguna-dengan-produk-digital', title: "Desain Pengguna dengan Produk Digital", category: "UI/UX Design", date: "2 Apr 2025", image: "/browser.svg", description: "Pelajari cara mendesain pengalaman pengguna lebih efektif dan menciptakan produk digital yang bermanfaat bagi pengguna." }
+      { slug: 'desain-pengguna-dengan-produk-digital', title: "Desain Pengguna dengan Produk Digital", category: "UI/UX Design", date: "2 Apr 2025", image: "/browser.svg", description: "Pelajari cara mendesain pengalaman pengguna lebih efektif dan menciptakan produk digital yang bermanfaat bagi pengguna.", tags: ['UI', 'UX', 'Desain'] }
     ],
     'lintas-minat': [
-      { slug: 'berkarir-di-bidang-yang-berbeda-berani-untuk-mencoba', title: "Berkarir di Bidang yang Berbeda? Berani untuk Mencoba", category: "Lintas Minat", date: "30 Mar 2025", image: "/hacking.svg", description: "Pelajari jalur karier bidang teknologi yang berbeda untuk memperluas peluang jika keinginan untuk beralih profesi muncul." }
+      { slug: 'berkarir-di-bidang-yang-berbeda-berani-untuk-mencoba', title: "Berkarir di Bidang yang Berbeda? Berani untuk Mencoba", category: "Lintas Minat", date: "30 Mar 2025", image: "/hacking.svg", description: "Pelajari jalur karier bidang teknologi yang berbeda untuk memperluas peluang jika keinginan untuk beralih profesi muncul.", tags: ['Karir'] }
     ]
   };
 
@@ -99,15 +101,28 @@ const Home = () => {
   const [selectedJourneyCategory, setSelectedJourneyCategory] = useState<string>('all');
   const [currentJourneyPage, setCurrentJourneyPage] = useState(1);
   
+  // Search and filter state
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string>('all');
 
-  // Function to filter blogs based on selected category
-  const filteredBlogs = selectedBlogCategory === 'all' 
-    ? allBlogs 
-    : allBlogs.filter(blog => {
-        // Create a normalized category ID that matches our category selection IDs
-        const blogCategoryId = blog.category.toLowerCase().replace(/[\s/]+/g, '-');
-        return blogCategoryId === selectedBlogCategory;
-      });
+  // Add state for copy feedback popup
+  const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null);
+
+  // Function to filter blogs based on selected category, tag, and search keyword
+  const filteredBlogs = allBlogs.filter(blog => {
+    // Category filter
+    const blogCategoryId = blog.category.toLowerCase().replace(/[\s/]+/g, '-');
+    const categoryMatch = selectedBlogCategory === 'all' || blogCategoryId === selectedBlogCategory;
+    // Tag filter
+    const tagMatch = selectedTag === 'all' || (blog.tags && blog.tags.includes(selectedTag));
+    // Search filter
+    const keyword = searchKeyword.trim().toLowerCase();
+    const searchMatch = !keyword ||
+      blog.title.toLowerCase().includes(keyword) ||
+      blog.description.toLowerCase().includes(keyword) ||
+      (blog.tags && blog.tags.some(tag => tag.toLowerCase().includes(keyword)));
+    return categoryMatch && tagMatch && searchMatch;
+  });
 
   // Determine the main blog to display based on category selection
   const displayedMainBlog = selectedBlogCategory === 'all' 
@@ -152,8 +167,25 @@ const Home = () => {
     setCurrentJourneyPage(page);
   };
 
+  // Modified copy link function with popup feedback
+  const handleCopyLink = useCallback((slug: string) => {
+    const url = `https://chayon.com/blog/${slug}`;
+    navigator.clipboard.writeText(url)
+      .then(() => {
+        setShowCopyFeedback(slug);
+        setTimeout(() => setShowCopyFeedback(null), 2000);
+      })
+      .catch((err) => {
+        console.error('Failed to copy:', err);
+      });
+  }, []);
+
   return (
     <>
+      <Head>
+        <title>Chayon - Explore Knowledge & Insights</title>
+        <meta name="description" content="Temukan berbagai wawasan seputar dunia teknologi, kursus online, dan perkembangan terbaru. Dapatkan informasi eksklusif, serta kisah inspiratif dari narasumber kami." />
+      </Head>
       <Navbar />
 
       {/* Search Bar */}
@@ -162,8 +194,10 @@ const Home = () => {
           <Image src="/search.svg" width={24} height={24} alt="Search Icon" className="mr-3" />
           <input 
             type="text" 
-            placeholder="Pencarian" 
+            placeholder="Pencarian artikel, topik, tag..." 
             className="outline-none text-gray-500 text-lg font-light w-full" 
+            value={searchKeyword}
+            onChange={e => setSearchKeyword(e.target.value)}
           />
         </div>
 
@@ -208,12 +242,66 @@ const Home = () => {
                 </div>
                 <h3 className="text-2xl font-bold mb-3">{displayedMainBlog.title}</h3>
                 <p className="text-gray-600 mb-4 line-clamp-3">{displayedMainBlog.description}</p>
-                <Link href={`/blog/${displayedMainBlog.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-                  Baca Selengkapnya
-                  <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
-                  </svg>
-                </Link>
+                {/* Share Feature */}
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="text-xs text-gray-500">Bagikan:</span>
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://chayon.com/blog/' + displayedMainBlog.slug)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="hover:text-blue-700"
+                    aria-label="Share on Facebook"
+                  >
+                    <Image src="/facebook.svg" width={20} height={20} alt="Facebook" />
+                  </a>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(displayedMainBlog.title + ' https://chayon.com/blog/' + displayedMainBlog.slug)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="hover:text-green-600"
+                    aria-label="Share on WhatsApp"
+                  >
+                    <Image src="/whatsapp.svg" width={20} height={20} alt="WhatsApp" />
+                  </a>
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + displayedMainBlog.slug)}&text=${encodeURIComponent(displayedMainBlog.title)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="hover:text-blue-500"
+                    aria-label="Share on Twitter"
+                  >
+                    <Image src="/twitter.svg" width={20} height={20} alt="Twitter" />
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + displayedMainBlog.slug)}&title=${encodeURIComponent(displayedMainBlog.title)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="hover:text-blue-800"
+                    aria-label="Share on LinkedIn"
+                  >
+                    <Image src="/linkedin.svg" width={20} height={20} alt="LinkedIn" />
+                  </a>
+
+                  {/* Copy link with popup */}
+                  <div className="relative">
+                    <button
+                      onClick={() => handleCopyLink(displayedMainBlog.slug)}
+                      className="hover:text-gray-600 transition-colors"
+                      aria-label="Copy Link"
+                    >
+                      <Image src="/link.svg" width={20} height={20} alt="Copy Link" />
+                    </button>
+                    {showCopyFeedback === displayedMainBlog.slug && (
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                        Link Copied
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <Link href={`/blog/${displayedMainBlog.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                    Baca Selengkapnya
+                    <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
+                    </svg>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -221,28 +309,114 @@ const Home = () => {
           {/* Blog Cards Grid - Using filtered blogs that don't include the main blog */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {displayedSecondaryBlogs.slice(0, 6).map((blog) => (
-              <div key={blog.slug} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full cursor-pointer hover:shadow-md transition-shadow">
-                <Link href={`/blog/${blog.slug}`} className="block h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src={blog.image}
-                      alt={blog.title}
-                      layout="fill"
-                      objectFit="cover"
-                    />
-                  </div>
-                  <div className="p-4 flex flex-col flex-grow">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">{blog.category}</span>
-                      <span className="text-xs text-gray-500">{blog.date}</span>
+              <div key={blog.slug} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full">
+                <div className="group cursor-pointer h-full flex flex-col">
+                  {/* Card content that links to blog */}
+                  <Link href={`/blog/${blog.slug}`} className="block flex-1">
+                    <div className="relative h-48">
+                      <Image
+                        src={blog.image}
+                        alt={blog.title}
+                        layout="fill"
+                        objectFit="cover"
+                      />
                     </div>
-                    <h3 className="font-bold mb-2 line-clamp-2">{blog.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{blog.description}</p>
-                    <span className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-auto">
-                      Baca Selengkapnya
-                    </span>
+                    <div className="p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">
+                          {blog.category}
+                        </span>
+                        <span className="text-xs text-gray-500">{blog.date}</span>
+                      </div>
+                      <h3 className="font-bold mb-2 line-clamp-2">{blog.title}</h3>
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {blog.description}
+                      </p>
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {blog.tags?.map((tag) => (
+                          <span
+                            key={tag}
+                            className="bg-gray-100 text-xs px-2 py-0.5 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                        Baca Selengkapnya
+                        <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                          <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Social sharing section - separate from the main link */}
+                  <div className="p-4 pt-0 border-t">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">Bagikan:</span>
+                      <a
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                          'https://chayon.com/blog/' + blog.slug
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-700"
+                        aria-label="Share on Facebook"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Image src="/facebook.svg" width={20} height={20} alt="Facebook" />
+                      </a>
+                      <a
+                        href={`https://wa.me/?text=${encodeURIComponent(displayedMainBlog.title + ' https://chayon.com/blog/' + displayedMainBlog.slug)}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="hover:text-green-600"
+                        aria-label="Share on WhatsApp"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Image src="/whatsapp.svg" width={20} height={20} alt="WhatsApp" />
+                      </a>
+                      <a
+                        href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + displayedMainBlog.slug)}&text=${encodeURIComponent(displayedMainBlog.title)}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="hover:text-blue-500"
+                        aria-label="Share on Twitter"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Image src="/twitter.svg" width={20} height={20} alt="Twitter" />
+                      </a>
+                      <a
+                        href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + displayedMainBlog.slug)}&title=${encodeURIComponent(displayedMainBlog.title)}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="hover:text-blue-800"
+                        aria-label="Share on LinkedIn"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Image src="/linkedin.svg" width={20} height={20} alt="LinkedIn" />
+                      </a>
+
+                      {/* Copy link with popup */}
+                      <div>
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleCopyLink(blog.slug);
+                          }}
+                          className="hover:text-gray-600 transition-colors"
+                          aria-label="Copy Link"
+                        >
+                          <Image src="/link.svg" width={16} height={16} alt="Copy Link" />
+                        </button>
+                        {showCopyFeedback === blog.slug && (
+                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                            Link Copied
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </Link>
+                </div>
               </div>
             ))}
           </div>

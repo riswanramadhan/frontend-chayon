@@ -27,15 +27,23 @@ const Footer = () => {
           
           {/* Social Media Icons (Rata Kanan) */}
           <div className="flex-1 flex justify-end space-x-4">
-            {/* External links can remain as <a> tags */}
-            <a href="#" className="hover:text-gray-900">
-              <Image src="/facebook.svg" width={30} height={30} alt="Facebook" />
-            </a>
-            <a href="#" className="hover:text-gray-900">
+            <a href={"https://www.instagram.com/chayon.id?igsh=bGJzZDRxbXh1aXEz"} 
+               className="hover:text-gray-900" 
+               target="_blank" 
+               rel="noopener noreferrer">
               <Image src="/instagram.svg" width={30} height={30} alt="Instagram" />
             </a>
-            <a href="#" className="hover:text-gray-900">
+            <a href={"https://www.linkedin.com/company/chayon-online-course"} 
+               className="hover:text-gray-900"
+               target="_blank" 
+               rel="noopener noreferrer">
               <Image src="/linkedin.svg" width={30} height={30} alt="Linkedin" />
+            </a>
+            <a href={"https://www.youtube.com/@chayon_youtube"} 
+               className="hover:text-gray-900"
+               target="_blank" 
+               rel="noopener noreferrer">
+              <Image src="/youtube.svg" width={30} height={30} alt="Youtube" />
             </a>
           </div>
         </div>
