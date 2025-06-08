@@ -18,7 +18,7 @@ const Home = () => {
     category: "Machine Learning",
     date: "12 Apr 2025",
     image: "/nlp.svg",
-    tags: ['AI', 'Machine Learning'] // <-- add this line
+    tags: ['AI', 'Machine Learning']
   };
 
   // Data Blog Kecil with slugs instead of IDs categorized by type
@@ -51,7 +51,7 @@ const Home = () => {
     { id: 'all', name: 'Show all' },
     { id: 'digital-marketing', name: 'Digital Marketing' },
     { id: 'machine-learning', name: 'Machine Learning' },
-    { id: 'ui-ux-design', name: 'UI/UX Design' }, // Updated ID to match the filtering logic
+    { id: 'ui-ux-design', name: 'UI/UX Design' },
     { id: 'melamar-kerja', name: 'Melamar Kerja' },
     { id: 'lintas-minat', name: 'Lintas Minat' },
     { id: 'jenjang-karir', name: 'Jenjang Karir' }
@@ -62,7 +62,7 @@ const Home = () => {
     { id: 'all', name: 'Show all' },
     { id: 'digital-marketing', name: 'Digital Marketing' },
     { id: 'machine-learning', name: 'Machine Learning' },
-    { id: 'ui-ux-design', name: 'UI/UX Design' } // Updated ID to match the filtering logic
+    { id: 'ui-ux-design', name: 'UI/UX Design' }
   ];
 
   // Learning journey courses
@@ -190,11 +190,11 @@ const Home = () => {
 
       {/* Search Bar */}
       <div className="flex flex-col items-center mt-16 space-y-12">
-        <div className="flex items-center bg-white shadow-md rounded-full px-6 py-3 w-[554px]">
+        <div className="flex items-center bg-white rounded-full px-6 py-3 w-[554px]">
           <Image src="/search.svg" width={24} height={24} alt="Search Icon" className="mr-3" />
           <input 
             type="text" 
-            placeholder="Pencarian artikel, topik, tag..." 
+            placeholder="Pencarian" 
             className="outline-none text-gray-500 text-lg font-light w-full" 
             value={searchKeyword}
             onChange={e => setSearchKeyword(e.target.value)}
@@ -203,7 +203,7 @@ const Home = () => {
 
         {/* Text Section 1 */}
         <div className="flex flex-col items-center text-center max-w-[968px] space-y-6">
-          <div className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-full shadow-sm">
+          <div className="flex items-center space-x-2 bg-white-100 px-4 py-2">
             <span className="text-gray-900 font-medium text-sm">Chayon Online Course</span>
             <Image src="/sparkle.svg" width={18} height={24} alt="Sparkle" />
           </div>
@@ -543,8 +543,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-
-
       </div>
       <Newsletter />
       <Footer />

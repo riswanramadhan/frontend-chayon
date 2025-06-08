@@ -51,13 +51,13 @@ const Navbar = () => {
             ref={el => { dropdownRefs.current.bidang = el; }}
           >
             <button onClick={() => toggleDropdown('bidang')} className="flex items-center gap-2">
-              Mengenal Bidang <ChevronDown size={16} className={`transition-transform ${openDropdown === 'bidang' ? 'rotate-180' : ''}`} />
+              Panduan Belajar <ChevronDown size={16} className={`transition-transform ${openDropdown === 'bidang' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'bidang' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
-                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
-                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
+                <Link href="/panduan/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
+                <Link href="/panduan/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
+                <Link href="/panduan/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
               </div>
             )}
           </li>
@@ -67,13 +67,13 @@ const Navbar = () => {
             ref={el => { dropdownRefs.current.panduan = el; }}
           >
             <button onClick={() => toggleDropdown('panduan')} className="flex items-center gap-2">
-              Panduan Belajar <ChevronDown size={16} className={`transition-transform ${openDropdown === 'panduan' ? 'rotate-180' : ''}`} />
+              Kursus Online <ChevronDown size={16} className={`transition-transform ${openDropdown === 'panduan' ? 'rotate-180' : ''}`} />
             </button>
             {openDropdown === 'panduan' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="/courses/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
-                <Link href="/courses/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
-                <Link href="/courses/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
+                <Link href="/kursus/digital-marketing" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Digital Marketing</Link>
+                <Link href="/kursus/machine-learning" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Machine Learning</Link>
+                <Link href="/kursus/ui-ux-design" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">UI/UX Design</Link>
               </div>
             )}
           </li>
@@ -87,9 +87,9 @@ const Navbar = () => {
             </button>
             {openDropdown === 'karir' && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-md rounded-md">
-                <Link href="/karir/melamar-kerja" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Melamar Kerja</Link>
-                <Link href="/karir/lintas-minat" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Lintas Minat</Link>
-                <Link href="/karir/jenjang-karir" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Jenjang Karir</Link>
+                <Link href="/tips/melamar-kerja" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Melamar Kerja</Link>
+                <Link href="/tips/lintas-minat" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Lintas Minat</Link>
+                <Link href="/tips/jenjang-karir" className="block px-4 py-2 hover:bg-gray-100 w-full text-left">Jenjang Karir</Link>
               </div>
             )}
           </li>
