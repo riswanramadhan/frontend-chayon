@@ -78,3 +78,14 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     throw error instanceof ApiError ? error : new ApiError('Failed to fetch article by slug');
   }
 }
+
+export async function getArticlesByCategory(category: string): Promise<Article[]> {
+  try {
+    const response = await fetch(`${API_URL}/api/artikel`);
+    const data = await handleResponse<ApiResponse<Article[]>>(response);
+    return data.data.filter(article => article.category.toLowerCase() === category.toLowerCase());
+  } catch (error) {
+    console.error('Error fetching articles by category:', error);
+    throw error instanceof ApiError ? error : new ApiError('Failed to fetch articles by category');
+  }
+}
