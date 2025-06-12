@@ -6,14 +6,14 @@ export interface Article {
   category: string;
   date: string;
   image: string;
-  content: {
+  content: Array<{
     title: string;
     paragraphs: string;
     bulletPoints: string;
-  }[];
-  related_articles: {
+  }>;
+  related_articles: Array<{
     title: string;
-  }[];
+  }>;
   created_at: string;
   updated_at: string;
 }
@@ -64,5 +64,17 @@ export async function getArticleById(id: string): Promise<Article | null> {
   } catch (error) {
     console.error('Error fetching article:', error);
     throw error instanceof ApiError ? error : new ApiError('Failed to fetch article');
+  }
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  try {
+    const response = await fetch(`${API_URL}/api/artikel/slug/${slug}`);
+    if (response.status === 404) return null;
+    const data = await handleResponse<ApiResponse<Article>>(response);
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching article by slug:', error);
+    throw error instanceof ApiError ? error : new ApiError('Failed to fetch article by slug');
   }
 }
