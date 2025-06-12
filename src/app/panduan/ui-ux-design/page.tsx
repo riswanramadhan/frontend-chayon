@@ -1,9 +1,9 @@
 "use client"
 
 import Image from 'next/image'
-import { Newsletter } from '@/components/ui/Newsletter'
-import { withCategory } from '@/components/withCategory'
+import Link from 'next/link'
 import Head from 'next/head'
+import { withCategory } from '@/components/withCategory'
 import { Article } from '@/lib/api'
 
 interface UIUXDesignPageProps {
@@ -56,8 +56,8 @@ function UIUXDesignPage({
               UI/UX Design
             </h1>
             <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
-              Pelajari dasar-dasar UI/UX design dan mulai perjalanan Anda dalam menciptakan antarmuka yang 
-              mudah digunakan dan menarik secara visual.
+            Temukan berbagai wawasan seputar dunia UI/UX Design, mulai dari prinsip desain antarmuka, pengalaman pengguna, hingga tren dan tools terbaru.
+            Dapatkan informasi eksklusif serta kisah inspiratif dari para desainer dan praktisi di bidang UI/UX.
             </p>
           </div>
 

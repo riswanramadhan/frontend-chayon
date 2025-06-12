@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Newsletter } from '@/components/ui/Newsletter'
+import Head from 'next/head'
 import { withCategory } from '@/components/withCategory'
 import { Article } from '@/lib/api'
 
@@ -29,25 +29,36 @@ function MachineLearningPage({
 }: MachineLearningPageProps) {
   return (
     <>
-      <main className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-16">
-          <h1 className="text-4xl font-bold text-center mb-8">Machine Learning</h1>
-          <p className="text-gray-600 text-center max-w-2xl mx-auto mb-12">
-            Pelajari dasar-dasar machine learning dan implementasinya dalam dunia nyata.
-          </p>
+      <Head>
+        <title>Machine Learning - Chayon Online Course</title>
+      </Head>
+      
+      <main className="min-h-screen bg-white">
+        {/* Search Section */}
+        <div className="flex flex-col items-center mt-16 space-y-12">
+          <div className="flex items-center bg-white rounded-full px-6 py-3 w-[554px]">
+            <Image src="/search.svg" width={24} height={24} alt="Search Icon" className="mr-3" />
+            <input 
+              type="text" 
+              placeholder="Pencarian" 
+              className="outline-none text-gray-500 text-lg font-light w-full"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+          </div>
+        </div>
 
-          {/* Search Section */}
-          <div className="flex flex-col items-center mt-8 mb-12 space-y-8">
-            <div className="flex items-center bg-white rounded-full px-6 py-3 w-full max-w-[554px]">
-              <Image src="/search.svg" width={24} height={24} alt="Search Icon" className="mr-3" />
-              <input 
-                type="text" 
-                placeholder="Cari artikel machine learning..." 
-                className="outline-none text-gray-500 text-lg font-light w-full"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-              />
-            </div>
+        {/* Category Header */}
+        <div className="container mx-auto px-4 mt-16">
+          <div className="max-w-[800px] mx-auto text-center">
+            <span className="text-sm font-medium text-black-500 mb-2 block">Kategori</span>
+            <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-4">
+              Machine Learning
+            </h1>
+            <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
+            Temukan berbagai wawasan seputar dunia machine learning, mulai dari algoritma populer, penerapan dalam kehidupan nyata, hingga tren dan teknologi terbaru.
+            Dapatkan informasi eksklusif serta kisah inspiratif dari para ahli dan praktisi di bidang machine learning.
+            </p>
           </div>
 
           {/* Articles Grid */}
@@ -74,6 +85,39 @@ function MachineLearningPage({
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Pagination */}
+          <div className="flex justify-center mb-16">
+            <nav className="flex items-center space-x-2">
+              <button 
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                className={`px-3 py-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
+                disabled={currentPage === 1}
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`px-3 py-2 ${pageNum === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'} rounded-md`}
+                >
+                  {pageNum}
+                </button>
+              ))}
+              <button 
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                className={`px-3 py-2 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
+                disabled={currentPage === totalPages}
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </nav>
           </div>
         </div>
       </main>
