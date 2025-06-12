@@ -71,7 +71,7 @@ const BlogCard = ({
             </div>
             <div className="md:w-1/2 relative h-64 md:h-auto">
               <Image 
-                src={mainBlog.image} 
+                src={`/${mainBlog.image}`}
                 alt={mainBlog.title}
                 layout="fill"
                 objectFit="cover"
@@ -87,7 +87,7 @@ const BlogCard = ({
           <div key={index} className="bg-white shadow-md rounded-lg overflow-hidden">
             <div className="relative h-48">
               <Image 
-                src={blog.image} 
+                src={`/${blog.image}`} 
                 alt={blog.title}
                 layout="fill"
                 objectFit="cover"
