@@ -30,11 +30,34 @@ interface Category {
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentArticlePage, setCurrentArticlePage] = useState(1);
+  const [currentCoursePage, setCurrentCoursePage] = useState(1);
   const [selectedBlogCategory, setSelectedBlogCategory] = useState('all');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 6;
+
+  // Sample courses data
+  const courses = [
+    {
+      title: "Bangun Brand dan Tingkatkan Penjualan",
+      category: "Digital Marketing",
+      description: "Pelajari SEO, strategi media sosial, dan iklan digital untuk pemasaran yang efektif.",
+      image: "/keyboard.svg"
+    },
+    {
+      title: "Menciptakan Produk Digital yang Menarik",
+      category: "UI/UX Design",
+      description: "Pelajari prinsip desain antarmuka dan pengalaman pengguna untuk produk yang lebih baik.",
+      image: "/browser.svg"
+    },
+    {
+      title: "Mulai dari Nol! Kuasai Machine Learning",
+      category: "Machine Learning",
+      description: "Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karier di bidang AI.",
+      image: "/nlp.svg"
+    }
+  ];
 
   useEffect(() => {
     async function loadArticles() {
@@ -65,14 +88,19 @@ export default function Home() {
     ? articles 
     : articles.filter((article) => article.category.toLowerCase() === selectedBlogCategory);
 
-  // Pagination calculation
-  const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  // Articles pagination calculation
+  const totalArticlePages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
+  const articleStartIndex = (currentArticlePage - 1) * ITEMS_PER_PAGE;
+  const paginatedArticles = filteredArticles.slice(articleStartIndex, articleStartIndex + ITEMS_PER_PAGE);
+
+  // Courses pagination calculation
+  const totalCoursePages = Math.ceil(courses.length / ITEMS_PER_PAGE);
+  const courseStartIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE;
+  const paginatedCourses = courses.slice(courseStartIndex, courseStartIndex + ITEMS_PER_PAGE);
 
   // Reset to first page when category changes
   useEffect(() => {
-    setCurrentPage(1);
+    setCurrentArticlePage(1);
   }, [selectedBlogCategory]);
 
   // Get the main featured article (first article)
@@ -217,9 +245,9 @@ export default function Home() {
           </div>
           <div className="mt-8">
             <Pagination 
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              currentPage={currentArticlePage}
+              totalPages={totalArticlePages}
+              onPageChange={setCurrentArticlePage}
             />
           </div>
         </section>
@@ -244,23 +272,23 @@ export default function Home() {
 
             {/* Course Cards - Using same grid layout as articles */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedArticles.map((article) => (
-                <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+              {paginatedCourses.map((course, index) => (
+                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                   <div className="relative h-[200px]">
                     <Image
-                      src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
-                      alt={article.title}
+                      src={course.image}
+                      alt={course.title}
                       layout="fill"
                       objectFit="cover"
                     />
                   </div>
                   <div className="p-6">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">{article.category}</span>
+                      <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">{course.category}</span>
                     </div>
-                    <h3 className="text-xl font-bold mb-3">{article.title}</h3>
-                    <p className="text-gray-600 mb-5 line-clamp-3">{article.description}</p>
-                    <Link href={`/kursus/${article.category.toLowerCase().replace(/[\s/]+/g, '-')}`} 
+                    <h3 className="text-xl font-bold mb-3">{course.title}</h3>
+                    <p className="text-gray-600 mb-5 line-clamp-3">{course.description}</p>
+                    <Link href={`/kursus/${course.category.toLowerCase().replace(/[\s/]+/g, '-')}`} 
                           className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">
                       Daftar Sekarang
                     </Link>
@@ -270,9 +298,9 @@ export default function Home() {
             </div>
             <div className="mt-8">
               <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                currentPage={currentCoursePage}
+                totalPages={totalCoursePages}
+                onPageChange={setCurrentCoursePage}
               />
             </div>
           </div>
