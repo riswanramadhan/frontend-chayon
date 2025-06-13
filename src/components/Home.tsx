@@ -1,17 +1,17 @@
 'use client'
 
-import React, { useEffect, useState, useCallback } from 'react'
-import { Article, getAllArticles } from '@/lib/api'
-import { ArticleCard } from './ArticleCard'
-import CategoryBar from './CategoryBar'
-import { LoadingArticles } from './ui/LoadingArticles'
-import { ErrorMessage } from './ui/ErrorMessage'
+import Link from 'next/link'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { Newsletter } from './ui/Newsletter'
 import Image from 'next/image'
-import Link from 'next/link'
+import CategoryBar from './CategoryBar'
+import { ArticleCard } from './ArticleCard'
+import { Newsletter } from './ui/Newsletter'
 import { Pagination } from './ui/Pagination'
+import { ErrorMessage } from './ui/ErrorMessage'
+import { LoadingArticles } from './ui/LoadingArticles'
+import { Article, getAllArticles, API_URL } from '@/lib/api'
+import React, { useEffect, useState, useCallback } from 'react'
 
 const categoryImageMap: { [key: string]: string } = {
   'Digital Marketing': 'keyboard.svg',
@@ -60,16 +60,10 @@ export default function Home() {
     }))
   ];
   
-  // Modify article objects to use category-based images
-  const articlesWithImages = articles.map(article => ({
-    ...article,
-    image: categoryImageMap[article.category] || 'default.svg'
-  }));
-
   // Filter articles based on selected category
   const filteredArticles = selectedBlogCategory === 'all' 
-    ? articlesWithImages 
-    : articlesWithImages.filter((article) => article.category.toLowerCase() === selectedBlogCategory);
+    ? articles 
+    : articles.filter((article) => article.category.toLowerCase() === selectedBlogCategory);
 
   // Pagination calculation
   const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
@@ -82,7 +76,7 @@ export default function Home() {
   }, [selectedBlogCategory]);
 
   // Get the main featured article (first article)
-  const mainArticle = articlesWithImages[0];
+  const mainArticle = articles[0];
 
   // Modified copy link function with popup feedback
   const handleCopyLink = useCallback((slug: string) => {
@@ -150,10 +144,10 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="relative h-[400px]">
                     <Image
-                      src={`/${mainArticle.image}`}
+                      src={`${API_URL}/storage/artikel-thumbnails/${mainArticle.image.split('/').pop()}`}
                       alt={mainArticle.title}
                       layout="fill"
-                      objectFit="contain"
+                      objectFit="cover"
                     />
                   </div>
                   <div className="p-8 flex flex-col justify-between">
@@ -254,10 +248,10 @@ export default function Home() {
                 <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                   <div className="relative h-[200px]">
                     <Image
-                      src={`/${article.image}`}
+                      src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
                       alt={article.title}
                       layout="fill"
-                      objectFit="contain"
+                      objectFit="cover"
                     />
                   </div>
                   <div className="p-6">
@@ -266,7 +260,7 @@ export default function Home() {
                     </div>
                     <h3 className="text-xl font-bold mb-3">{article.title}</h3>
                     <p className="text-gray-600 mb-5 line-clamp-3">{article.description}</p>
-                    <Link href={`/courses/${article.category.toLowerCase().replace(/[\s/]+/g, '-')}`} 
+                    <Link href={`/kursus/${article.category.toLowerCase().replace(/[\s/]+/g, '-')}`} 
                           className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">
                       Daftar Sekarang
                     </Link>

@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'; // Update to next/navigation for App Router
+import { useRouter } from 'next/navigation';
 
 interface Blog {
-  slug: string; // Changed from id to slug to match our articles data structure
+  slug: string;
   title: string;
   description?: string;
   category: string;
@@ -17,7 +17,7 @@ interface BlogCardProps {
   buttonText?: string;
   buttonColor?: string;
   textColor?: string;
-  onBlogClick?: (slug: string) => void; // Updated to use slug
+  onBlogClick?: (slug: string) => void;
 }
 
 const BlogCard = ({ 

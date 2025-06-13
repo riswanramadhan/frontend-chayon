@@ -8,7 +8,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
 import { useState } from 'react'
-import { Article, getArticleBySlug, getAllArticles } from '@/lib/api'
+import { Article, getArticleBySlug, getAllArticles, API_URL } from '@/lib/api'
 
 const categoryImageMap: { [key: string]: string } = {
   'Digital Marketing': 'keyboard.svg',
@@ -31,6 +31,7 @@ export default function ArticlePage({ params }: PageParams) {
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
   console.log(article)
+  
   useEffect(() => {
     const fetchArticle = async () => {
       try {
@@ -115,7 +116,7 @@ export default function ArticlePage({ params }: PageParams) {
         {/* Featured Image */}
         <div className="relative w-full h-64 mb-8">
           <Image
-            src={`/${article.image}`}
+            src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
             alt={article.title}
             fill
             className="object-contain"
