@@ -1,10 +1,11 @@
 "use client"
 
-import Image from 'next/image'
 import Link from 'next/link'
 import Head from 'next/head'
-import { withCategory } from '@/components/withCategory'
+import Image from 'next/image'
 import { Article } from '@/lib/api'
+import { Pagination } from '@/components/ui/Pagination'
+import { withCategory } from '@/components/withCategory'
 
 interface UIUXDesignPageProps {
   articles: Article[];
@@ -78,49 +79,22 @@ function UIUXDesignPage({
                     <span className="text-sm text-gray-500">{article.date}</span>
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                  <p className="text-gray-600 mb-4">{article.description}</p>
-                  <a 
-                    href={`/blog/${article.slug}`}
-                    className="text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Read More →
-                  </a>
+                  <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
+                  <Link href={`/blog/${article.slug}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                    Baca Selengkapnya →
+                  </Link>
                 </div>
               </div>
             ))}
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-center mb-16">
-            <nav className="flex items-center space-x-2">
-              <button 
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                className={`px-3 py-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                disabled={currentPage === 1}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`px-3 py-2 ${pageNum === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:text-blue-600'} rounded-md`}
-                >
-                  {pageNum}
-                </button>
-              ))}
-              <button 
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                className={`px-3 py-2 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                disabled={currentPage === totalPages}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </nav>
+          <div className="mt-8">
+            <Pagination 
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </div>
       </main>

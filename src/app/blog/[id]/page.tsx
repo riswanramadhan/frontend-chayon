@@ -30,7 +30,7 @@ export default function ArticlePage({ params }: PageParams) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
-
+  console.log(article)
   useEffect(() => {
     const fetchArticle = async () => {
       try {

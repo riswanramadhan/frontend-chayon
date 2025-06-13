@@ -1,15 +1,16 @@
 "use client"
 
+import Link from 'next/link'
+import Head from 'next/head'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Newsletter } from '@/components/ui/Newsletter'
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
+import { Pagination } from '@/components/ui/Pagination'
+import { Newsletter } from '@/components/ui/Newsletter'
 import { getArticlesByCategory, Article } from '@/lib/api'
-import { LoadingArticles } from '@/components/ui/LoadingArticles'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
+import { LoadingArticles } from '@/components/ui/LoadingArticles'
 
 export default function JenjangKarirPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -109,14 +110,8 @@ export default function JenjangKarirPage() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">{article.title}</h3>
                   <p className="text-gray-600 mb-4">{article.description}</p>
-                  <Link 
-                    href={`/blog/${article.slug}`}
-                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
-                  >
-                    Baca Selengkapnya
-                    <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
+                  <Link href={`/blog/${article.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
+                    Baca Selengkapnya →
                   </Link>
                 </div>
               </div>
@@ -125,32 +120,12 @@ export default function JenjangKarirPage() {
 
           {/* Pagination */}
           {!loading && !error && (
-            <div className="flex justify-center mb-16">
-              <nav className="flex items-center space-x-2">
-                <button 
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  className={`px-3 py-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`px-3 py-2 ${currentPage === page ? 'bg-blue-600 text-white' : 'text-blue-600 hover:text-blue-800'} rounded`}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <button 
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  className={`px-3 py-2 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-              </nav>
+            <div className="mt-8">
+              <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
           )}
         </div>
