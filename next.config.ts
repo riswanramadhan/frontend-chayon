@@ -1,12 +1,10 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   eslint: {
-    ignoreDuringBuilds: true,  
-  },
-  images: {
-    domains: ['127.0.0.1','localhost'],
+    ignoreDuringBuilds: true,
   },
 };
+
 
 export default nextConfig;
