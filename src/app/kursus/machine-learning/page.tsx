@@ -1,38 +1,59 @@
 "use client"
 
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Image from 'next/image'
 import Link from 'next/link'
-import { Newsletter } from '@/components/ui/Newsletter'
-import { useState } from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
+import { Course, API_URL } from '@/lib/api'
+import { courseWithCategory } from '@/components/courseWithCategory'
 
-export default function MachineLearningCoursePage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchKeyword, setSearchKeyword] = useState('');
+interface MachineLearningCoursePageProps {
+  articles: Course[];
+  isLoading: boolean;
+  error: string | null;
+  searchKeyword: string;
+  setSearchKeyword: (value: string) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  totalPages: number;
+  paginatedArticles: Course[];
+}
 
-  // Sample course data matching the image
-  const courses = Array(6).fill({
-    title: "Mulai dari Nol!Kuasai Dasar-Dasar Machine Learning",
-    category: "Machine Learning",
-    description: "Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karier di bidang AI.",
-    image: "/nlp.svg",
-    isFreeRegister: true
-  });
-
-  // Filter courses based on search
-  const filteredCourses = courses.filter(course => 
-    course.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-    course.description.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
+function MachineLearningCoursePage({
+  searchKeyword,
+  setSearchKeyword,
+  currentPage,
+  setCurrentPage,
+  totalPages,
+  paginatedArticles,
+  isLoading,
+  error
+}: MachineLearningCoursePageProps) {
+  if (error) {
+    return (
+      <>
+        <Head>
+          <title>Machine Learning - Chayon Online Course</title>
+        </Head>
+        <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Error: {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Coba Lagi
+            </button>
+          </div>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
       <Head>
-        <title>Kursus Machine Learning - Chayon Online Course</title>
+        <title>Machine Learning - Chayon Online Course</title>
       </Head>
-      <Navbar />
       
       <main className="min-h-screen bg-gray-50">
         {/* Search Section */}
@@ -57,87 +78,130 @@ export default function MachineLearningCoursePage() {
               Machine Learning
             </h1>
             <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
-              Temukan berbagai wawasan seputar dunia machine learning, mulai dari algoritma populer,
-              pemrosesan data, hingga tips dan teknologi terbaru. Dapatkan informasi
-              eksklusif serta kisah inspiratif dari para ahli di bidang machine learning.
+              Temukan berbagai wawasan seputar dunia machine learning, mulai dari algoritma populer, penerapan dalam kehidupan nyata, hingga tren dan teknologi terbaru. Dapatkan informasi eksklusif serta kisah inspiratif dari para ahli dan praktisi di bidang machine learning.
             </p>
           </div>
 
-          {/* Course Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {filteredCourses.map((course, index) => (
-              <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                <div className="relative h-48">
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    layout="fill"
-                    objectFit="contain"
-                  />
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {Array(6).fill(0).map((_, index) => (
+                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm animate-pulse">
+                  <div className="h-48 bg-gray-200"></div>
+                  <div className="p-6">
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-10 bg-gray-200 rounded"></div>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
-                      {course.category}
-                    </span>
-                    {course.isFreeRegister && (
-                      <span className="inline-block bg-green-100 text-green-800 text-xs font-medium px-3 py-1 rounded-full">
-                        Free Register
-                      </span>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Articles Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                {paginatedArticles.length > 0 ? (
+                  paginatedArticles.map((article, index) => (
+                    <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
+                      <div className="relative h-48">
+                        <Image
+                          src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
+                          alt={article.title}
+                          layout="fill"
+                          objectFit="cover"
+                          onError={(e) => {
+                            e.currentTarget.src = '/keyboard.svg';
+                          }}
+                        />
+                      </div>
+                      <div className="p-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
+                            Machine Learning
+                          </span>
+                          <span className="text-sm text-gray-500">{article.title}</span>
+                        </div>
+                        <h3 className="text-xl font-bold mb-2 leading-tight">{article.title}</h3>
+                        <p className="text-gray-600 mb-4 line-clamp-2">{article.description}</p>
+                        <Link 
+                          // href={`/blog/${article.slug}`}
+                          href={`/course-detail/${article.course_slug}`}
+                          className="block w-full bg-black text-white text-center py-3 rounded-md font-medium hover:bg-gray-800 transition-colors"
+                        >
+                          Daftar Sekarang
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+                    {searchKeyword && (
+                      <p className="text-gray-400 mt-2">
+                        Coba kata kunci lain atau hapus filter pencarian.
+                      </p>
                     )}
                   </div>
-                  <h3 className="text-xl font-bold mb-2 leading-tight">{course.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">{course.description}</p>
-                  <Link 
-                    href="/kursus/daftar/machine-learning"
-                    className="block w-full text-center py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                  >
-                    Daftar Sekarang
-                  </Link>
-                </div>
+                )}
               </div>
-            ))}
-          </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center mb-16">
-            <nav className="flex items-center space-x-2">
-              <button 
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                className={`px-3 py-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                disabled={currentPage === 1}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-              
-              {[1, 2, 3, 4, 5].map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 ${currentPage === page ? 'bg-blue-600 text-white' : 'text-gray-700'} rounded-md`}
-                >
-                  {page}
-                </button>
-              ))}
-              
-              <button 
-                onClick={() => setCurrentPage(Math.min(5, currentPage + 1))}
-                className={`px-3 py-2 ${currentPage === 5 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
-                disabled={currentPage === 5}
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-            </nav>
-          </div>
+              {/* Pagination - Custom implementation matching course page style */}
+              {totalPages > 1 && (
+                <div className="flex justify-center mb-16">
+                  <nav className="flex items-center space-x-2">
+                    <button 
+                      onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                      className={`px-3 py-2 ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
+                      disabled={currentPage === 1}
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    
+                    {/* Dynamic page numbers based on totalPages */}
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-1 ${currentPage === pageNum ? 'bg-blue-600 text-white' : 'text-gray-700'} rounded-md hover:bg-blue-100`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                    
+                    <button 
+                      onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                      className={`px-3 py-2 ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:text-blue-800'}`}
+                      disabled={currentPage === totalPages}
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </nav>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </main>
-
-      <Newsletter />
-      <Footer />
     </>
-  );
+  )
 }
+
+export default courseWithCategory(MachineLearningCoursePage, 'Machine Learning');

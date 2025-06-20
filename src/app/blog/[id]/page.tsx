@@ -199,7 +199,7 @@ export default function ArticlePage({ params }: PageParams) {
         </div>
 
         {/* Related Articles */}
-        {article.related_articles && article.related_articles.length > 0 && (
+        {/* {article.related_articles && article.related_articles.length > 0 && (
           <div className="mt-12">
             <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -210,7 +210,7 @@ export default function ArticlePage({ params }: PageParams) {
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </main>
       
       <Newsletter />
