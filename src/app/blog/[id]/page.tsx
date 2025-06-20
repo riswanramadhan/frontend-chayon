@@ -9,15 +9,20 @@ import { Newsletter } from '@/components/ui/Newsletter'
 import { useState } from 'react'
 import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
-type PageParams = {
-  params: { id: string };
-};
+// Perbaikan tipe untuk parameter halaman
+interface PageProps {
+  params: {
+    id: string
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
 
-export default function ArticlePage({ params }: PageParams) {
+export default function ArticlePage({ params, searchParams }: PageProps) {
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
+
 
   console.log(article);
 
