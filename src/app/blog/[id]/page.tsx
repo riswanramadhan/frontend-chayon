@@ -8,11 +8,11 @@ import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
 import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
-type ArticlePageProps = {
+type Props = {
   params: { id: string }
 }
 
-export default function ArticlePage({ params }: ArticlePageProps) {
+export default function ArticlePage({ params }: Props) {
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
