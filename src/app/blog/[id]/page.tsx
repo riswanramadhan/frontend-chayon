@@ -1,12 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
+import { useState } from 'react'
 import { Article, getArticleBySlug, getAllArticles, API_URL } from '@/lib/api'
 
 const categoryImageMap: { [key: string]: string } = {
@@ -19,31 +20,32 @@ const categoryImageMap: { [key: string]: string } = {
 };
 
 type PageParams = {
-  params: { id: string };
+  params: Promise<{ id: string }> | { id: string };
 };
 
 export default function ArticlePage({ params }: PageParams) {
-  const { id } = params;
+  const resolvedParams = React.use(params as Promise<{ id: string }>);
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
-
+  console.log(article)
+  
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const articleData = await getArticleBySlug(id);
+        const articleData = await getArticleBySlug(resolvedParams.id);
         if (!articleData) {
           throw new Error('Article not found');
         }
-
+        
         setArticle(articleData);
-
+        
         // Fetch related articles
         const allArticles = await getAllArticles();
         const related = allArticles
-          .filter((a) => a.slug !== id && a.category === articleData.category)
+          .filter((a) => a.slug !== resolvedParams.id && a.category === articleData.category)
           .slice(0, 3)
           .map((article) => ({
             ...article,
@@ -59,11 +61,7 @@ export default function ArticlePage({ params }: PageParams) {
     };
 
     fetchArticle();
-  }, [id]);
-
-  // ... Lanjut ke bagian render (tidak usah diubah)
-}
-
+  }, [resolvedParams.id]);
 
   if (error) {
     return (
