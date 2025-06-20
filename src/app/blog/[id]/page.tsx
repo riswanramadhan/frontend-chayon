@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
@@ -9,48 +9,27 @@ import { Newsletter } from '@/components/ui/Newsletter'
 import { useState } from 'react'
 import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
-const categoryImageMap: { [key: string]: string } = {
-  'Digital Marketing': 'keyboard.svg',
-  'Machine Learning': 'ddos.svg',
-  'UI/UX Design': 'browser.svg',
-  'Melamar Kerja': 'notes.svg',
-  'Lintas Minat': 'hacking.svg',
-  'Jenjang Karir': 'wordle.svg'
-};
-
 type PageParams = {
-  params: Promise<{ id: string }> | { id: string };
+  params: { id: string };
 };
 
 export default function ArticlePage({ params }: PageParams) {
-  const resolvedParams = React.use(params as Promise<{ id: string }>);
   const [article, setArticle] = useState<Article | null>(null);
-  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
-  console.log(article)
-  
+
+  console.log(article);
+
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const articleData = await getArticleBySlug(resolvedParams.id);
+        const articleData = await getArticleBySlug(params.id);
         if (!articleData) {
           throw new Error('Article not found');
         }
-        
+
         setArticle(articleData);
-        
-        // Fetch related articles
-       // const allArticles = await getAllArticles();
-        //const related = allArticles
-          //.filter((a) => a.slug !== resolvedParams.id && a.category === articleData.category)
-          //.slice(0, 3)
-          //.map((article) => ({
-            //...article,
-            //image: categoryImageMap[article.category] || 'default.svg'
-          //}));
-        //setRelatedArticles(related);//
       } catch (err) {
         console.error('Error fetching article:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch article');
@@ -60,7 +39,7 @@ export default function ArticlePage({ params }: PageParams) {
     };
 
     fetchArticle();
-  }, [resolvedParams.id]);
+  }, [params.id]);
 
   if (error) {
     return (
@@ -90,7 +69,7 @@ export default function ArticlePage({ params }: PageParams) {
 
   const handleCopyLink = async () => {
     try {
-      const url = `https://chayon.com/blog/${resolvedParams.id}`;
+      const url = `https://chayon.com/blog/${params.id}`;
       await navigator.clipboard.writeText(url);
       setShowCopyFeedback(true);
       setTimeout(() => setShowCopyFeedback(false), 2000);
@@ -149,7 +128,7 @@ export default function ArticlePage({ params }: PageParams) {
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Bagikan artikel ini:</span>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://chayon.com/blog/' + resolvedParams.id)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://chayon.com/blog/' + params.id)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-700"
               aria-label="Share on Facebook"
@@ -157,7 +136,7 @@ export default function ArticlePage({ params }: PageParams) {
               <Image src="/facebook.svg" width={20} height={20} alt="Facebook" />
             </a>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(article.title + ' https://chayon.com/blog/' + resolvedParams.id)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(article.title + ' https://chayon.com/blog/' + params.id)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-green-600"
               aria-label="Share on WhatsApp"
@@ -165,7 +144,7 @@ export default function ArticlePage({ params }: PageParams) {
               <Image src="/whatsapp.svg" width={20} height={20} alt="WhatsApp" />
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + resolvedParams.id)}&text=${encodeURIComponent(article.title)}`}
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + params.id)}&text=${encodeURIComponent(article.title)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-500"
               aria-label="Share on Twitter"
@@ -173,7 +152,7 @@ export default function ArticlePage({ params }: PageParams) {
               <Image src="/twitter.svg" width={20} height={20} alt="Twitter" />
             </a>
             <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + resolvedParams.id)}&title=${encodeURIComponent(article.title)}`}
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + params.id)}&title=${encodeURIComponent(article.title)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-800"
               aria-label="Share on LinkedIn"
@@ -196,22 +175,8 @@ export default function ArticlePage({ params }: PageParams) {
             </div>
           </div>
         </div>
-
-        {/* Related Articles */}
-        {/* {article.related_articles && article.related_articles.length > 0 && (
-          <div className="mt-12">
-            <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {article.related_articles.map((related, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-sm p-4">
-                  <h4 className="font-semibold mt-2">{related.title}</h4>
-                </div>
-              ))}
-            </div>
-          </div>
-        )} */}
       </main>
-      
+
       <Newsletter />
       <Footer />
     </>
