@@ -1,14 +1,13 @@
 'use client'
 
-import React, { Suspense, useEffect } from 'react'
+import React, {useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
 import { useState } from 'react'
-import { Article, getArticleBySlug, getAllArticles, API_URL } from '@/lib/api'
+import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
 const categoryImageMap: { [key: string]: string } = {
   'Digital Marketing': 'keyboard.svg',
@@ -43,15 +42,15 @@ export default function ArticlePage({ params }: PageParams) {
         setArticle(articleData);
         
         // Fetch related articles
-        const allArticles = await getAllArticles();
-        const related = allArticles
-          .filter((a) => a.slug !== resolvedParams.id && a.category === articleData.category)
-          .slice(0, 3)
-          .map((article) => ({
-            ...article,
-            image: categoryImageMap[article.category] || 'default.svg'
-          }));
-        setRelatedArticles(related);
+       // const allArticles = await getAllArticles();
+        //const related = allArticles
+          //.filter((a) => a.slug !== resolvedParams.id && a.category === articleData.category)
+          //.slice(0, 3)
+          //.map((article) => ({
+            //...article,
+            //image: categoryImageMap[article.category] || 'default.svg'
+          //}));
+        //setRelatedArticles(related);//
       } catch (err) {
         console.error('Error fetching article:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch article');

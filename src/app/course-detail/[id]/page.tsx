@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Suspense, useEffect, useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -97,7 +97,7 @@ export default function DynamicCoursePage({ params }: PageParams) {
     notFound();
   }
 
-  const courseImage = categoryImageMap[course.course_category] || 'keyboard.svg';
+  
   const backgroundClass = categoryBackgroundMap[course.course_category] || 'bg-gray-50';
 
   return (

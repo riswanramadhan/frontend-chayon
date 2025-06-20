@@ -92,13 +92,14 @@ const useCopyToClipboard = () => {
 };
 
 // Utility functions
-const formatCategories = (items: string[], type: 'articles' | 'courses' = 'articles'): Category[] => [
+const formatCategories = (items: string[]): Category[] => [
   { id: 'all', name: 'Show All' },
   ...items.map(item => ({
     id: item.toLowerCase(),
     name: item
   }))
 ];
+
 
 const filterByCategory = <T extends { category?: string; course_category?: string }>(
   items: T[],
