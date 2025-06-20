@@ -1,48 +1,35 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
-import { useState } from 'react'
 import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
-// Perbaikan tipe untuk parameter halaman
-interface PageProps {
-  params: {
-    id: string
-  }
-  searchParams: { [key: string]: string | string[] | undefined }
+type ArticlePageProps = {
+  params: { id: string }
 }
 
-export default function ArticlePage({ params, searchParams }: PageProps) {
+export default function ArticlePage({ params }: ArticlePageProps) {
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
 
-
-  console.log(article);
-
   useEffect(() => {
     const fetchArticle = async () => {
       try {
         const articleData = await getArticleBySlug(params.id);
-        if (!articleData) {
-          throw new Error('Article not found');
-        }
-
+        if (!articleData) throw new Error('Article not found');
         setArticle(articleData);
       } catch (err) {
-        console.error('Error fetching article:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch article');
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchArticle();
   }, [params.id]);
 
@@ -181,7 +168,6 @@ export default function ArticlePage({ params, searchParams }: PageProps) {
           </div>
         </div>
       </main>
-
       <Newsletter />
       <Footer />
     </>
