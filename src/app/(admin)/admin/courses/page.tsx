@@ -17,7 +17,7 @@ export default function AdminCourses() {
     setItems(data || [])
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const del = async (id: string) => {
     if (!confirm('Hapus kursus ini?')) return

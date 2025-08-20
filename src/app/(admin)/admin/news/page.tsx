@@ -20,7 +20,8 @@ export default function AdminNews() {
     setItems(data || [])
   }
 
-  useEffect(() => { load() }, []) // first load
+  // first load
+  useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <AdminGuard>
