@@ -1,5 +1,5 @@
-import { Input } from './input'
-import { Button } from './button'
+import { Input } from './Input'
+import { Button } from './Button'
 
 export function Newsletter() {
   return (

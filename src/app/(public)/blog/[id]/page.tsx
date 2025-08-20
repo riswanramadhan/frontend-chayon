@@ -8,7 +8,10 @@ import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
 import { Article, getArticleBySlug, API_URL } from '@/lib/api'
 
-export default function ArticlePage({ params }: { params: { id: string } }) {
+export default function ArticlePage(
+  props: { params: { id: string }, searchParams?: { [key: string]: string | string[] | undefined } }
+) {
+  const { params } = props;
   const [article, setArticle] = useState<Article | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
