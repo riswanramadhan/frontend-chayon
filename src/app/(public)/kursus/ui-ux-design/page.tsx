@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
-import { Course, API_URL } from '@/lib/api'
+import { useState } from 'react'
 import { courseWithCategory } from '@/components/courseWithCategory'
 
 interface UiUxDesignCoursePageProps {

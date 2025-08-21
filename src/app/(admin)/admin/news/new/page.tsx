@@ -1,42 +1,93 @@
 'use client'
 import { useState } from 'react'
-import { AdminGuard } from '@/components/AdminGuard'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Card } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
-import { Textarea } from '@/components/ui/Textarea'
-import { Button } from '@/components/ui/Button'
+import { createClient } from '@/lib/supabase/client'
+import { slugify } from '@/lib/slug'
+import { AdminGuard } from '@/components/AdminGuard'
 
-export default function NewNews() {
+export default function NewNewsPage() {
   const supabase = createClient()
   const router = useRouter()
   const [title, setTitle] = useState('')
+  const [category, setCategory] = useState('')
+  const [description, setDescription] = useState('')
   const [content, setContent] = useState('')
   const [imageUrl, setImageUrl] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
 
-  const save = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
-    const { error } = await supabase.from('news').insert({ title, content, image_url: imageUrl || null })
-    setLoading(false)
-    if (!error) router.replace('/admin/news')
-    else alert(error.message)
+    setSaving(true)
+    setErr(null)
+    const slug = slugify(title)
+    const { error } = await supabase.from('news').insert({
+      title,
+      slug,
+      category,
+      description,
+      content,
+      image_url: imageUrl || null,
+    })
+    setSaving(false)
+    if (error) { setErr(error.message); return }
+    router.push('/admin/news')
   }
 
   return (
     <AdminGuard>
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Tambah Berita</h1>
-        <Card>
-          <form onSubmit={save} className="space-y-3">
-            <Input placeholder="Judul" value={title} onChange={e=>setTitle(e.target.value)} required />
-            <Textarea placeholder="Isi berita" value={content} onChange={e=>setContent(e.target.value)} required />
-            <Input placeholder="Image URL (opsional)" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} />
-            <Button type="submit" disabled={loading}>{loading ? 'Menyimpan…' : 'Simpan'}</Button>
-          </form>
-        </Card>
+      <div className="max-w-2xl">
+        <h1 className="text-2xl font-semibold mb-4">Tambah Berita</h1>
+        {err && <div className="text-red-500 mb-3">{err}</div>}
+        <form onSubmit={onSubmit} className="space-y-4">
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Judul"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Kategori (opsional)"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Image URL (opsional)"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+          />
+          <textarea
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[90px]"
+            placeholder="Deskripsi ringkas (untuk kartu)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <textarea
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[200px]"
+            placeholder="Konten (markdown/HTML bebas)"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50"
+            >
+              {saving ? 'Menyimpan…' : 'Simpan'}
+            </button>
+            <button
+              type="button"
+              onClick={() => history.back()}
+              className="px-4 py-2 rounded-xl border border-white/20 text-sm"
+            >
+              Batal
+            </button>
+          </div>
+        </form>
       </div>
     </AdminGuard>
   )

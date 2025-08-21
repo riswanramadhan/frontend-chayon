@@ -1,59 +1,129 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { AdminGuard } from '@/components/AdminGuard'
-import { createClient } from '@/lib/supabase/client'
 import { useParams, useRouter } from 'next/navigation'
-import { Card } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
-import { Textarea } from '@/components/ui/Textarea'
-import { Button } from '@/components/ui/Button'
+import { createClient } from '@/lib/supabase/client'
+import { slugify } from '@/lib/slug'
+import { AdminGuard } from '@/components/AdminGuard'
 
-export default function EditNews() {
-  const { id } = useParams<{ id: string }>()
+type Row = {
+  id: string
+  title: string | null
+  slug: string | null
+  category: string | null
+  description: string | null
+  content: string | null
+  image_url: string | null
+}
+
+export default function EditNewsPage() {
   const supabase = createClient()
+  const params = useParams<{ id: string }>()
   const router = useRouter()
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [row, setRow] = useState<Row | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
 
   useEffect(() => {
     const load = async () => {
-      const { data, error } = await supabase.from('news').select('*').eq('id', id).single()
-      if (!error && data) {
-        setTitle(data.title)
-        setContent(data.content)
-        setImageUrl(data.image_url ?? '')
-      }
+      setLoading(true)
+      setErr(null)
+      const { data, error } = await supabase
+        .from('news')
+        .select('*')
+        .eq('id', params.id)
+        .single()
+      if (error) setErr(error.message)
+      setRow(data as Row)
+      setLoading(false)
     }
     load()
-  }, [id, supabase])
+  }, [params.id, supabase])
 
-  const save = async (e: React.FormEvent) => {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
-    const { error } = await supabase.from('news')
-      .update({ title, content, image_url: imageUrl || null })
-      .eq('id', id)
-    setLoading(false)
-    if (!error) router.replace('/admin/news')
-    else alert(error.message)
+    if (!row) return
+    setSaving(true)
+    setErr(null)
+    const { error } = await supabase
+      .from('news')
+      .update({
+        title: row.title,
+        slug: row.slug ? slugify(row.slug) : slugify(row.title || ''),
+        category: row.category,
+        description: row.description,
+        content: row.content,
+        image_url: row.image_url || null,
+      })
+      .eq('id', row.id)
+    setSaving(false)
+    if (error) { setErr(error.message); return }
+    router.push('/admin/news')
   }
+
+  if (loading) return <AdminGuard><div>Memuat…</div></AdminGuard>
+  if (!row) return <AdminGuard><div>Data tidak ditemukan.</div></AdminGuard>
 
   return (
     <AdminGuard>
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Edit Berita</h1>
-        <Card>
-          <form onSubmit={save} className="space-y-3">
-            <Input value={title} onChange={e=>setTitle(e.target.value)} required />
-            <Textarea value={content} onChange={e=>setContent(e.target.value)} required />
-            <Input value={imageUrl} onChange={e=>setImageUrl(e.target.value)} />
-            <div className="flex gap-3">
-              <Button type="submit" disabled={loading}>{loading ? 'Menyimpan…' : 'Simpan'}</Button>
-            </div>
-          </form>
-        </Card>
+      <div className="max-w-2xl">
+        <h1 className="text-2xl font-semibold mb-4">Edit Berita</h1>
+        {err && <div className="text-red-500 mb-3">{err}</div>}
+        <form onSubmit={onSubmit} className="space-y-4">
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Judul"
+            value={row.title ?? ''}
+            onChange={(e) => setRow({ ...row, title: e.target.value })}
+            required
+          />
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Slug (opsional, otomatis dari judul)"
+            value={row.slug ?? ''}
+            onChange={(e) => setRow({ ...row, slug: e.target.value })}
+          />
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Kategori"
+            value={row.category ?? ''}
+            onChange={(e) => setRow({ ...row, category: e.target.value })}
+          />
+          <input
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Image URL"
+            value={row.image_url ?? ''}
+            onChange={(e) => setRow({ ...row, image_url: e.target.value })}
+          />
+          <textarea
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[90px]"
+            placeholder="Deskripsi"
+            value={row.description ?? ''}
+            onChange={(e) => setRow({ ...row, description: e.target.value })}
+          />
+          <textarea
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[200px]"
+            placeholder="Konten"
+            value={row.content ?? ''}
+            onChange={(e) => setRow({ ...row, content: e.target.value })}
+          />
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50"
+            >
+              {saving ? 'Menyimpan…' : 'Simpan'}
+            </button>
+            <button
+              type="button"
+              onClick={() => history.back()}
+              className="px-4 py-2 rounded-xl border border-white/20 text-sm"
+            >
+              Batal
+            </button>
+          </div>
+        </form>
       </div>
     </AdminGuard>
   )

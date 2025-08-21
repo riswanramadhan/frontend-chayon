@@ -12,7 +12,8 @@ import { Newsletter } from './ui/Newsletter'
 import { ErrorMessage } from './ui/ErrorMessage'
 import { Pagination } from './ui/Pagination'
 import { LoadingArticles } from './ui/LoadingArticles'
-import { Article, getAllArticles, API_URL } from '@/lib/api'
+import type { Article } from '@/lib/api'
+import { getAllArticles } from '@/lib/api'
 
 /** Map kategori → ikon default (digunakan sebagai fallback gambar kursus) */
 const categoryImageMap: Record<string, string> = {
@@ -251,7 +252,7 @@ export default function Home() {
                       const imgName =
                         (mainArticle.image ?? '').split('/').pop() ?? ''
                       const mainImgSrc = imgName
-                        ? `${API_URL}/storage/artikel-thumbnails/${imgName}`
+                        ? `mainArticle.image_url || '/fallback.jpg'} ... />`
                         : '/fallback.jpg' // siapkan /public/fallback.jpg jika perlu
                       return (
                         <Image
