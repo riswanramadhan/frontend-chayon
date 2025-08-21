@@ -8,6 +8,11 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [ok, setOk] = useState<boolean | null>(null)
 
+  const logout = async () => {
+    await supabase.auth.signOut()
+    router.replace('/')
+  }
+
   useEffect(() => {
     const run = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -30,5 +35,12 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   }, [router, supabase])
 
   if (ok === null) return <div className="p-6">Memeriksa akses…</div>
-  return <>{children}</>
+  return (
+    <div className="p-6">
+      <div className="flex justify-end mb-6">
+        <button onClick={logout} className="text-sm underline">Logout</button>
+      </div>
+      {children}
+    </div>
+  )
 }

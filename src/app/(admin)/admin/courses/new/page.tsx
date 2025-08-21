@@ -7,12 +7,15 @@ import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
+import { slugify } from '@/lib/slug'
 
 export default function NewCourse() {
   const supabase = createClient()
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const [gform, setGform] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -20,7 +23,12 @@ export default function NewCourse() {
     e.preventDefault()
     setLoading(true)
     const { error } = await supabase.from('courses').insert({
-      title, description: description || null, gform_url: gform
+      title,
+      course_slug: slugify(title),
+      course_category: category || null,
+      description: description || null,
+      image_url: imageUrl || null,
+      gform_url: gform,
     })
     setLoading(false)
     if (!error) router.replace('/admin/courses')
@@ -34,6 +42,8 @@ export default function NewCourse() {
         <Card>
           <form onSubmit={save} className="space-y-3">
             <Input placeholder="Judul" value={title} onChange={e=>setTitle(e.target.value)} required />
+            <Input placeholder="Kategori" value={category} onChange={e=>setCategory(e.target.value)} />
+            <Input placeholder="Image URL" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} />
             <Textarea placeholder="Deskripsi (opsional)" value={description} onChange={e=>setDescription(e.target.value)} />
             <Input placeholder="Link Google Form" value={gform} onChange={e=>setGform(e.target.value)} required />
             <Button type="submit" disabled={loading}>{loading ? 'Menyimpan…' : 'Simpan'}</Button>

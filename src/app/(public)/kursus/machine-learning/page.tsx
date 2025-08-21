@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
-import { Course, API_URL } from '@/lib/api'
+import { Course } from '@/lib/api'
 import { courseWithCategory } from '@/components/courseWithCategory'
 
 interface MachineLearningCoursePageProps {
@@ -106,13 +106,10 @@ function MachineLearningCoursePage({
                     <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
                       <div className="relative h-48">
                         <Image
-                          src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
+                          src={article.image_url || '/keyboard.svg'}
                           alt={article.title}
-                          layout="fill"
-                          objectFit="cover"
-                          onError={(e) => {
-                            e.currentTarget.src = '/keyboard.svg';
-                          }}
+                          fill
+                          className="object-cover"
                         />
                       </div>
                       <div className="p-6">

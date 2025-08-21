@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
-import { Article, API_URL } from '@/lib/api'
+import { Article } from '@/lib/api'
 import { Pagination } from '@/components/ui/Pagination'
 import { withCategory } from '@/components/withCategory'
 
@@ -68,7 +68,7 @@ function MachineLearningPage({
               <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div className="relative h-48 w-full">
                   <Image
-                    src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
+                    src={article.image_url || '/fallback.jpg'}
                     alt={article.title}
                     fill
                     className="object-cover"

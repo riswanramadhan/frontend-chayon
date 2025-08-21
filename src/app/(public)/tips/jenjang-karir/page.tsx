@@ -8,7 +8,7 @@ import Footer from '@/components/Footer'
 import { useState, useEffect } from 'react'
 import { Pagination } from '@/components/ui/Pagination'
 import { Newsletter } from '@/components/ui/Newsletter'
-import { getArticlesByCategory, Article, API_URL } from '@/lib/api'
+import { getArticlesByCategory, Article } from '@/lib/api'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { LoadingArticles } from '@/components/ui/LoadingArticles'
 
@@ -95,10 +95,10 @@ export default function JenjangKarirPage() {
               <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div className="relative h-48">
                   <Image
-                    src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
+                    src={article.image_url || '/fallback.jpg'}
                     alt={article.title}
-                    layout="fill"
-                    objectFit="contain"
+                    fill
+                    className="object-contain"
                   />
                 </div>
                 <div className="p-6">
