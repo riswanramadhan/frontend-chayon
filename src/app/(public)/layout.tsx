@@ -1,6 +1,5 @@
-import './globals.css'
+import '../globals.css'
 import type { Metadata } from 'next'
-import { Nav } from '@/components/Navbar.tsx'
 
 export const metadata: Metadata = {
   title: 'Chayon',
@@ -9,13 +8,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id">
-      <body className="min-h-screen antialiased">
-        <Nav />
-        <main className="mx-auto max-w-6xl px-4 md:px-6">{children}</main>
-        <footer className="border-t border-white/10 mt-12 py-8 text-sm text-white/60 text-center">
-          © {new Date().getFullYear()} Chayon
-        </footer>
+    <html lang="i d">
+      <body className="min-h-screen bg-[#0b0b0b] text-white antialiased">
+        {children}
       </body>
     </html>
   )
