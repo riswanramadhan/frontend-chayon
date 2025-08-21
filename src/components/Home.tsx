@@ -53,21 +53,21 @@ export default function Home() {
       category: 'Digital Marketing',
       description:
         'Pelajari SEO, strategi media sosial, dan iklan digital untuk pemasaran yang efektif.',
-      image: '/keyboard.svg',
+      image_url: '/keyboard.svg',
     },
     {
       title: 'Menciptakan Produk Digital yang Menarik',
       category: 'UI/UX Design',
       description:
         'Pelajari prinsip desain antarmuka dan pengalaman pengguna untuk produk yang lebih baik.',
-      image: '/browser.svg',
+      image_url: '/browser.svg',
     },
     {
       title: 'Mulai dari Nol! Kuasai Machine Learning',
       category: 'Machine Learning',
       description:
         'Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karier di bidang AI.',
-      image: '/nlp.svg',
+      image_url: '/nlp.svg',
     },
   ]
 
@@ -450,7 +450,7 @@ export default function Home() {
                   `/icons/${
                     categoryImageMap[course.category] ?? 'browser.svg'
                   }`
-                const imageSrc = course.image || fallback
+                const imageSrc = course.image_url || fallback
                 return (
                   <div
                     key={`${course.title}-${idx}`}

@@ -30,7 +30,7 @@ export default function AdminNewsListPage() {
     setLoading(false)
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function onDelete(id: string) {
     if (!confirm('Hapus berita ini?')) return

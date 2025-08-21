@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
-import { Article, getArticleBySlug, API_URL } from '@/lib/api'
+import { Article, getArticleBySlug } from '@/lib/api'
 
 export default function ArticlePage(
   props: { params: { id: string }, searchParams?: { [key: string]: string | string[] | undefined } }
@@ -85,7 +85,7 @@ export default function ArticlePage(
         {/* Featured Image */}
         <div className="relative w-full h-64 mb-8">
           <Image
-            src={`${API_URL}/storage/artikel-thumbnails/${article.image.split('/').pop()}`}
+            src={article.image_url || '/fallback.jpg'}
             alt={article.title}
             fill
             className="object-contain"
