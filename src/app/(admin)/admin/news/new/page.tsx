@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { slugify } from '@/lib/slug'
 import { AdminGuard } from '@/components/AdminGuard'
+import CategorySelect from '@/components/CategorySelect'
+import { NEWS_CATEGORIES } from '@/lib/constants'
 
 export default function NewNewsPage() {
   const supabase = createClient()
@@ -47,11 +49,11 @@ export default function NewNewsPage() {
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-          <input
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Kategori (opsional)"
+          <CategorySelect
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={setCategory}
+            options={NEWS_CATEGORIES}
+            label="Kategori (opsional)"
           />
           <input
             className="w-full rounded-xl border border-white/20 bg-transparent p-3"

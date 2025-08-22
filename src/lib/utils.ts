@@ -1,17 +1,22 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Article } from "@/lib/api";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function filterArticles(articles: Article[], searchKeyword: string): Article[] {
-  const keyword = searchKeyword.toLowerCase();
-  return articles.filter((article) =>
-    article.title.toLowerCase().includes(keyword) ||
-    article.description.toLowerCase().includes(keyword)
-  );
+type HasText = { title: string; description: string | null }
+
+export function filterArticles<T extends HasText>(
+  articles: T[],
+  searchKeyword: string,
+): T[] {
+  const keyword = searchKeyword.toLowerCase()
+  return articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(keyword) ||
+      (article.description?.toLowerCase().includes(keyword) ?? false),
+  )
 }
 
 export function paginateData<T>(items: T[], currentPage: number, itemsPerPage: number = 9): T[] {

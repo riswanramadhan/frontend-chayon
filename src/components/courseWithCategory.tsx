@@ -1,3 +1,4 @@
+'use client'
 import { ComponentType, useEffect, useState } from 'react';
 import { getAllCourses, Course, ApiError } from '@/lib/api';
 import { LoadingArticles } from '@/components/ui/LoadingArticles';

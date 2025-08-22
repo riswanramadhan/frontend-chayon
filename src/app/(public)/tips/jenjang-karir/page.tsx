@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import Head from 'next/head'
-import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { useState, useEffect } from 'react'
@@ -11,6 +10,8 @@ import { Newsletter } from '@/components/ui/Newsletter'
 import { getArticlesByCategory, Article } from '@/lib/api'
 import { ErrorMessage } from '@/components/ui/ErrorMessage'
 import { LoadingArticles } from '@/components/ui/LoadingArticles'
+import { SafeImage } from '@/components/SafeImage'
+import Image from 'next/image'
 
 export default function JenjangKarirPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,10 +38,11 @@ export default function JenjangKarirPage() {
   }, []);
 
   // Filter articles based on search
-  const filteredArticles = articles.filter(article => 
-    article.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-    article.description.toLowerCase().includes(searchKeyword.toLowerCase())
-  );
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      (article.description?.toLowerCase().includes(searchKeyword.toLowerCase()) ?? false)
+  )
 
   // Pagination
   const articlesPerPage = 6;
@@ -94,8 +96,8 @@ export default function JenjangKarirPage() {
             ) : currentArticles.map((article) => (
               <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div className="relative h-48">
-                  <Image
-                    src={article.image_url || '/fallback.jpg'}
+                  <SafeImage
+                    src={article.image_url ?? ''}
                     alt={article.title}
                     fill
                     className="object-contain"

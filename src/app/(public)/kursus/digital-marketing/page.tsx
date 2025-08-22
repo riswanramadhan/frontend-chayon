@@ -7,7 +7,7 @@ import { Course } from '@/lib/api'
 import { courseWithCategory } from '@/components/courseWithCategory'
 
 interface DigitalMarketingCoursePageProps {
-  articles: Course[];
+  courses: Course[];
   isLoading: boolean;
   error: string | null;
   searchKeyword: string;

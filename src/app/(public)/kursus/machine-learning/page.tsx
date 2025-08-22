@@ -7,7 +7,7 @@ import { Course } from '@/lib/api'
 import { courseWithCategory } from '@/components/courseWithCategory'
 
 interface MachineLearningCoursePageProps {
-  articles: Course[];
+  courses: Course[];
   isLoading: boolean;
   error: string | null;
   searchKeyword: string;

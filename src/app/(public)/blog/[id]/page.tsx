@@ -2,35 +2,46 @@
 
 import React, { useEffect, useState } from 'react'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Newsletter } from '@/components/ui/Newsletter'
 import { Article, getArticleBySlug } from '@/lib/api'
+import { SafeImage } from '@/components/SafeImage'
+import Image from 'next/image'
 
-export default function ArticlePage(
-  props: { params: { id: string }, searchParams?: { [key: string]: string | string[] | undefined } }
-) {
-  const { params } = props;
-  const [article, setArticle] = useState<Article | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showCopyFeedback, setShowCopyFeedback] = useState(false);
+type ArticlePageProps = {
+  params: Promise<{ id: string }>
+}
+
+type ContentSection = {
+  title: string
+  paragraphs: string
+  bulletPoints?: string
+}
+
+export default function ArticlePage({ params }: ArticlePageProps) {
+  const [slug, setSlug] = useState('')
+  const [article, setArticle] = useState<Article | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [showCopyFeedback, setShowCopyFeedback] = useState(false)
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const articleData = await getArticleBySlug(params.id);
-        if (!articleData) throw new Error('Article not found');
-        setArticle(articleData);
+        const { id } = await params
+        setSlug(id)
+        const articleData = await getArticleBySlug(id)
+        if (!articleData) throw new Error('Article not found')
+        setArticle(articleData)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch article');
+        setError(err instanceof Error ? err.message : 'Failed to fetch article')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    fetchArticle();
-  }, [params.id]);
+    }
+    fetchArticle()
+  }, [params])
 
   if (error) {
     return (
@@ -60,14 +71,14 @@ export default function ArticlePage(
 
   const handleCopyLink = async () => {
     try {
-      const url = `https://chayon.com/blog/${params.id}`;
-      await navigator.clipboard.writeText(url);
-      setShowCopyFeedback(true);
-      setTimeout(() => setShowCopyFeedback(false), 2000);
+      const url = `https://chayon.com/blog/${slug}`
+      await navigator.clipboard.writeText(url)
+      setShowCopyFeedback(true)
+      setTimeout(() => setShowCopyFeedback(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error('Failed to copy:', err)
     }
-  };
+  }
 
   return (
     <>
@@ -84,8 +95,8 @@ export default function ArticlePage(
 
         {/* Featured Image */}
         <div className="relative w-full h-64 mb-8">
-          <Image
-            src={article.image_url || '/fallback.jpg'}
+          <SafeImage
+            src={article.image_url ?? ''}
             alt={article.title}
             fill
             className="object-contain"
@@ -94,24 +105,25 @@ export default function ArticlePage(
 
         {/* Article Content */}
         <article className="prose max-w-none">
-          {article.content.map((section, index) => (
-            <div key={index} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-              <div className="text-gray-700 mb-4 leading-relaxed whitespace-pre-wrap">
-                {section.paragraphs}
-              </div>
-              {section.bulletPoints && (
-                <div className="pl-6">
-                  {section.bulletPoints.split('\n').map((point, idx) => (
-                    <div key={idx} className="flex items-start mb-2">
-                      <span className="mr-2">•</span>
-                      <span className="text-gray-700">{point.replace('- ', '')}</span>
-                    </div>
-                  ))}
+          {Array.isArray(article.content) &&
+            (article.content as ContentSection[]).map((section, index) => (
+              <div key={index} className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
+                <div className="text-gray-700 mb-4 leading-relaxed whitespace-pre-wrap">
+                  {section.paragraphs}
                 </div>
-              )}
-            </div>
-          ))}
+                {section.bulletPoints && (
+                  <div className="pl-6">
+                    {section.bulletPoints.split('\n').map((point, idx) => (
+                      <div key={idx} className="flex items-start mb-2">
+                        <span className="mr-2">•</span>
+                        <span className="text-gray-700">{point.replace('- ', '')}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
         </article>
 
         {/* Share Feature */}
@@ -119,7 +131,7 @@ export default function ArticlePage(
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Bagikan artikel ini:</span>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://chayon.com/blog/' + params.id)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://chayon.com/blog/' + slug)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-700"
               aria-label="Share on Facebook"
@@ -127,7 +139,7 @@ export default function ArticlePage(
               <Image src="/facebook.svg" width={20} height={20} alt="Facebook" />
             </a>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(article.title + ' https://chayon.com/blog/' + params.id)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(article.title + ' https://chayon.com/blog/' + slug)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-green-600"
               aria-label="Share on WhatsApp"
@@ -135,7 +147,7 @@ export default function ArticlePage(
               <Image src="/whatsapp.svg" width={20} height={20} alt="WhatsApp" />
             </a>
             <a
-              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + params.id)}&text=${encodeURIComponent(article.title)}`}
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent('https://chayon.com/blog/' + slug)}&text=${encodeURIComponent(article.title)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-500"
               aria-label="Share on Twitter"
@@ -143,7 +155,7 @@ export default function ArticlePage(
               <Image src="/twitter.svg" width={20} height={20} alt="Twitter" />
             </a>
             <a
-              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + params.id)}&title=${encodeURIComponent(article.title)}`}
+              href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent('https://chayon.com/blog/' + slug)}&title=${encodeURIComponent(article.title)}`}
               target="_blank" rel="noopener noreferrer"
               className="hover:text-blue-800"
               aria-label="Share on LinkedIn"

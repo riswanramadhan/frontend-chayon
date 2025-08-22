@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import Head from 'next/head'
-import Image from 'next/image'
 import { Article } from '@/lib/api'
 import { Pagination } from '@/components/ui/Pagination'
 import { withCategory } from '@/components/withCategory'
+import { SafeImage } from '@/components/SafeImage'
+import Image from 'next/image'
 
 interface UIUXDesignPageProps {
   articles: Article[];
@@ -67,8 +68,8 @@ function UIUXDesignPage({
             {paginatedArticles.map((article, index) => (
               <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div className="relative h-48 w-full">
-                  <Image
-                    src={article.image_url || '/fallback.jpg'}
+                  <SafeImage
+                    src={article.image_url ?? ''}
                     alt={article.title}
                     fill
                     className="object-cover"
