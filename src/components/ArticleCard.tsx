@@ -2,32 +2,26 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
-import { Article } from '@/lib/api'     
+import { Article } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
+import { SafeImage } from './SafeImage'
 
 interface ArticleCardProps {
   article: Article
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
-  const [imgError, setImgError] = useState(false)
-
-  // pakai image_url dari Supabase; fallback ke gambar lokal jika kosong/error
-  const imgSrc = !imgError && article.image_url ? article.image_url : '/fallback.jpg'
-
   // tanggal: pakai article.date (mapping dari created_at di lib/api)
   const displayDate = formatDate ? formatDate(article.date) : article.date
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 group hover:shadow-md transition-shadow">
       <div className="relative h-48">
-        <Image
-          src={imgSrc}
+        <SafeImage
+          src={article.image_url ?? ''}
           alt={article.title}
           fill
           className="object-cover"
-          onError={() => setImgError(true)}
           priority={false}
         />
       </div>

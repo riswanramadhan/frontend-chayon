@@ -4,6 +4,8 @@ import { useParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { slugify } from '@/lib/slug'
 import { AdminGuard } from '@/components/AdminGuard'
+import CategorySelect from '@/components/CategorySelect'
+import { NEWS_CATEGORIES } from '@/lib/constants'
 
 type Row = {
   id: string
@@ -83,11 +85,11 @@ export default function EditNewsPage() {
             value={row.slug ?? ''}
             onChange={(e) => setRow({ ...row, slug: e.target.value })}
           />
-          <input
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Kategori"
+          <CategorySelect
             value={row.category ?? ''}
-            onChange={(e) => setRow({ ...row, category: e.target.value })}
+            onChange={(v) => setRow({ ...row, category: v })}
+            options={NEWS_CATEGORIES}
+            label="Kategori"
           />
           <input
             className="w-full rounded-xl border border-white/20 bg-transparent p-3"

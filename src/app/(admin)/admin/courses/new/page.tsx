@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/Input'
 import { Textarea } from '@/components/ui/Textarea'
 import { Button } from '@/components/ui/Button'
 import { slugify } from '@/lib/slug'
+import CategorySelect from '@/components/CategorySelect'
+import { COURSE_CATEGORIES } from '@/lib/constants'
 
 export default function NewCourse() {
   const supabase = createClient()
@@ -42,7 +44,12 @@ export default function NewCourse() {
         <Card>
           <form onSubmit={save} className="space-y-3">
             <Input placeholder="Judul" value={title} onChange={e=>setTitle(e.target.value)} required />
-            <Input placeholder="Kategori" value={category} onChange={e=>setCategory(e.target.value)} />
+            <CategorySelect
+              value={category}
+              onChange={setCategory}
+              options={COURSE_CATEGORIES}
+              label="Kategori"
+            />
             <Input placeholder="Image URL" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} />
             <Textarea placeholder="Deskripsi (opsional)" value={description} onChange={e=>setDescription(e.target.value)} />
             <Input placeholder="Link Google Form" value={gform} onChange={e=>setGform(e.target.value)} required />

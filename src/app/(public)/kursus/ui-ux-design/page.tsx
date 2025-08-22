@@ -7,7 +7,7 @@ import { courseWithCategory } from '@/components/courseWithCategory'
 import { Course } from '@/lib/api'
 
 interface UiUxDesignCoursePageProps {
-  articles: Course[];
+  courses: Course[];
   isLoading: boolean;
   error: string | null;
   searchKeyword: string;

@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/client'
 import { AdminGuard } from '@/components/AdminGuard'
 import { slugify } from '@/lib/slug'
 import { Textarea } from '@/components/ui/Textarea'
+import CategorySelect from '@/components/CategorySelect'
+import { COURSE_CATEGORIES } from '@/lib/constants'
 
 type Row = {
   id: string
@@ -83,11 +85,11 @@ export default function EditCoursePage() {
             value={row.course_slug ?? ''}
             onChange={(e) => setRow({ ...row, course_slug: e.target.value })}
           />
-          <input
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Kategori"
+          <CategorySelect
             value={row.course_category ?? ''}
-            onChange={(e) => setRow({ ...row, course_category: e.target.value })}
+            onChange={(v) => setRow({ ...row, course_category: v })}
+            options={COURSE_CATEGORIES}
+            label="Kategori"
           />
           <input
             className="w-full rounded-xl border border-white/20 bg-transparent p-3"

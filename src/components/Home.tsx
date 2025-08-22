@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SafeImage } from './SafeImage'
 
 import Navbar from './Navbar'
 import Footer from './Footer'
@@ -98,7 +99,9 @@ export default function Home() {
   }, [loadArticles])
 
   // --- kategori unik untuk CategoryBar ---
-  const uniqueCategories = Array.from(new Set(articles.map((a) => a.category)))
+  const uniqueCategories = Array.from(
+    new Set(articles.map((a) => a.category).filter(Boolean))
+  ) as string[]
   const formattedCategories: Category[] = [
     { id: 'all', name: 'Show All' },
     ...uniqueCategories.map((cat) => ({ id: cat.toLowerCase(), name: cat })),
@@ -109,7 +112,9 @@ export default function Home() {
     selectedBlogCategory === 'all'
       ? articles
       : articles.filter(
-          (a) => a.category.toLowerCase() === selectedBlogCategory,
+          (a) =>
+            a.category &&
+            a.category.toLowerCase() === selectedBlogCategory,
         )
 
   // --- filter berdasarkan pencarian ---
@@ -118,7 +123,7 @@ export default function Home() {
     ? filteredByCategory.filter(
         (a) =>
           a.title.toLowerCase().includes(keyword) ||
-          a.description.toLowerCase().includes(keyword),
+          (a.description?.toLowerCase().includes(keyword) ?? false),
       )
     : filteredByCategory
 
@@ -248,21 +253,12 @@ export default function Home() {
               <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div className="grid grid-cols-1 md:grid-cols-2">
                   <div className="relative h-[400px]">
-                    {(() => {
-                      const imgName =
-                        (mainArticle.image ?? '').split('/').pop() ?? ''
-                      const mainImgSrc = imgName
-                        ? `mainArticle.image_url || '/fallback.jpg'} ... />`
-                        : '/fallback.jpg' // siapkan /public/fallback.jpg jika perlu
-                      return (
-                        <Image
-                          src={mainImgSrc}
-                          alt={mainArticle.title}
-                          fill
-                          className="object-cover"
-                        />
-                      )
-                    })()}
+                    <SafeImage
+                      src={mainArticle.image_url ?? ''}
+                      alt={mainArticle.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="p-8 flex flex-col justify-between">
                     <div>

@@ -3,7 +3,8 @@ import { cookies } from 'next/headers'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 
 export const createRouteClient = () => {
-  const cookieStore = cookies() // di Route Handler bisa mutable
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cookieStore = cookies() as any // di Route Handler bisa mutable
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
