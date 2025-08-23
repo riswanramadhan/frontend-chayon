@@ -51,7 +51,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="w-full py-8 flex justify-between items-center text-gray-500">
           {/* Pesan (Rata Kiri) */}
-          <p className="flex-1">Dibuat dengan ❤️ oleh mahasiswa Informatika Universitas Hasanuddin.</p>
+          <p className="flex-1">Dibuat dengan ❤️ oleh Riswan Ramadhan (Teknik Informatika Unhas).</p>
           
           {/* Link (Rata Kanan) */}
           <div className="flex-1 flex justify-end space-x-6">

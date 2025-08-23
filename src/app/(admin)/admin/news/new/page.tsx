@@ -73,14 +73,14 @@ export default function NewNewsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50 hover:bg-white/80"
+              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50"
             >
               {saving ? 'Menyimpan…' : 'Simpan'}
             </button>
             <button
               type="button"
               onClick={() => history.back()}
-              className="px-4 py-2 rounded-xl border border-white/20 text-sm hover:bg-white/10"
+              className="px-4 py-2 rounded-xl border border-white/20 text-sm"
             >
               Batal
             </button>
