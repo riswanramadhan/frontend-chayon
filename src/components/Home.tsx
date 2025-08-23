@@ -13,8 +13,8 @@ import { Newsletter } from './ui/Newsletter'
 import { ErrorMessage } from './ui/ErrorMessage'
 import { Pagination } from './ui/Pagination'
 import { LoadingArticles } from './ui/LoadingArticles'
-import type { Article } from '@/lib/api'
-import { getAllArticles } from '@/lib/api'
+import type { Article, Course } from '@/lib/api'
+import { getAllArticles, getAllCourses } from '@/lib/api'
 
 /** Map kategori → ikon default (digunakan sebagai fallback gambar kursus) */
 const categoryImageMap: Record<string, string> = {
@@ -35,6 +35,7 @@ interface Category {
 export default function Home() {
   // --- state utama ---
   const [articles, setArticles] = useState<Article[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,31 +47,6 @@ export default function Home() {
   const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null)
 
   const ITEMS_PER_PAGE = 6
-
-  // --- Sample courses data (ganti dengan Supabase kalau sudah siap) ---
-  const courses = [
-    {
-      title: 'Bangun Brand dan Tingkatkan Penjualan',
-      category: 'Digital Marketing',
-      description:
-        'Pelajari SEO, strategi media sosial, dan iklan digital untuk pemasaran yang efektif.',
-      image_url: '/keyboard.svg',
-    },
-    {
-      title: 'Menciptakan Produk Digital yang Menarik',
-      category: 'UI/UX Design',
-      description:
-        'Pelajari prinsip desain antarmuka dan pengalaman pengguna untuk produk yang lebih baik.',
-      image_url: '/browser.svg',
-    },
-    {
-      title: 'Mulai dari Nol! Kuasai Machine Learning',
-      category: 'Machine Learning',
-      description:
-        'Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karier di bidang AI.',
-      image_url: '/nlp.svg',
-    },
-  ]
 
   // --- load data artikel ---
   const loadArticles = useCallback(async (): Promise<void> => {
@@ -92,11 +68,20 @@ export default function Home() {
       setIsLoading(false)
     }
   }, [])
-  
+
+  const loadCourses = useCallback(async (): Promise<void> => {
+    try {
+      const data = await getAllCourses()
+      setCourses(data)
+    } catch (err) {
+      console.error('Error loading courses:', err)
+    }
+  }, [])
 
   useEffect(() => {
     loadArticles()
-  }, [loadArticles])
+    loadCourses()
+  }, [loadArticles, loadCourses])
 
   // --- kategori unik untuk CategoryBar ---
   const uniqueCategories = Array.from(
@@ -441,15 +426,15 @@ export default function Home() {
 
             {/* grid kursus */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedCourses.map((course, idx) => {
+              {paginatedCourses.map((course) => {
                 const fallback =
                   `/icons/${
-                    categoryImageMap[course.category] ?? 'browser.svg'
+                    categoryImageMap[course.course_category || ''] ?? 'browser.svg'
                   }`
                 const imageSrc = course.image_url || fallback
                 return (
                   <div
-                    key={`${course.title}-${idx}`}
+                    key={course.id}
                     className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
                   >
                     <div className="relative h-[200px]">
@@ -463,7 +448,7 @@ export default function Home() {
                     <div className="p-6">
                       <div className="flex justify-between items-center mb-2">
                         <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">
-                          {course.category}
+                          {course.course_category}
                         </span>
                       </div>
                       <h3 className="text-xl font-bold mb-3">{course.title}</h3>
@@ -471,9 +456,7 @@ export default function Home() {
                         {course.description}
                       </p>
                       <Link
-                        href={`/kursus/${course.category
-                          .toLowerCase()
-                          .replace(/[\s/]+/g, '-')}`}
+                        href={`/course-detail/${course.course_slug}`}
                         className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center"
                       >
                         Daftar Sekarang
