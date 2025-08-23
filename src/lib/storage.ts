@@ -7,7 +7,7 @@ export async function uploadImage(
   const supabase = createClient()
 
   // ⚙️ nama bucket—sesuaikan dengan yang kamu buat di Supabase Storage
-  const bucket = 'public'
+  const bucket = 'Public'
 
   // Nama file unik dalam subfolder sesuai tipe konten
   const fileName = `${folder}/${crypto.randomUUID()}-${file.name}`
