@@ -2,15 +2,11 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import Footer from '@/components/Footer'
-import Navbar from "@/components/Navbar"
 import { Newsletter } from '@/components/ui/Newsletter'
 
 export default function AboutPage() {
   return (
     <>
-      <Navbar />
-
       <main>
         {/* Hero Section */}
         <section className="py-16">
@@ -197,7 +193,6 @@ export default function AboutPage() {
         </section>
       </main>
       <Newsletter />
-      <Footer />
     </>
   );
 }

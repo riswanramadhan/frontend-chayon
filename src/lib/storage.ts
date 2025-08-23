@@ -6,19 +6,19 @@ export async function uploadImage(
 ): Promise<{ publicUrl: string; path: string }> {
   const supabase = createClient()
 
-  // ⚙️ nama bucket—sesuaikan dengan yang kamu buat di Supabase Storage
+  // ⚙️ Sesuaikan dengan nama bucket di Supabase (case-sensitive)
   const bucket = 'Public'
 
-  // Nama file unik dalam subfolder sesuai tipe konten
+  // Nama file unik di subfolder sesuai tipe konten
   const fileName = `${folder}/${crypto.randomUUID()}-${file.name}`
 
-  // Upload
-  const { error: uploadErr } = await supabase.storage.from(bucket).upload(fileName, file, {
-    upsert: false, // supaya tidak menimpa file lama
-  })
+  // Upload (tanpa overwrite)
+  const { error: uploadErr } = await supabase.storage
+    .from(bucket)
+    .upload(fileName, file, { upsert: false })
 
   if (uploadErr) {
-    // Pesan lebih ramah jika bucket belum dibuat
+    // Pesan lebih jelas jika bucket belum ada
     if (uploadErr.message.toLowerCase().includes('not found')) {
       throw new Error(`Bucket "${bucket}" belum dibuat di Supabase. Buat bucket tersebut dahulu.`)
     }
@@ -28,6 +28,6 @@ export async function uploadImage(
   // Ambil public URL
   const { data } = supabase.storage.from(bucket).getPublicUrl(fileName)
 
-  // Kembalikan publicUrl dan path lengkap (bucket + path)
+  // Kembalikan URL publik dan path lengkap (bucket/path)
   return { publicUrl: data.publicUrl, path: `${bucket}/${fileName}` }
 }
