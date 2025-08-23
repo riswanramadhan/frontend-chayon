@@ -12,11 +12,7 @@ import { ErrorMessage } from './ui/ErrorMessage'
 import { Pagination } from './ui/Pagination'
 import { LoadingArticles } from './ui/LoadingArticles'
 import type { Article, Course } from '@/lib/api'
-import {
-  getAllArticles,
-  getAllCourses,
-  getCategories,
-} from '@/lib/api'
+import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
 
 /** Map kategori → ikon default (digunakan sebagai fallback gambar kursus) */
 const categoryImageMap: Record<string, string> = {
@@ -54,19 +50,21 @@ export default function Home() {
 
   const ITEMS_PER_PAGE = 6
 
+  // --- load semua data paralel ---
   const loadData = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
-      const [articleData, courseData, newsCats, courseCats] =
-        await Promise.all([
-          getAllArticles(),
-          getAllCourses(),
-          getCategories('news'),
-          getCategories('course'),
-        ])
+      const [articleData, courseData, newsCats, courseCats] = await Promise.all([
+        getAllArticles(),
+        getAllCourses(),
+        getCategories('news'),
+        getCategories('course'),
+      ])
+
       setArticles(articleData)
       setCourses(courseData)
+
       setNewsCategories(newsCats.map((c) => ({ id: c.name, name: c.name })))
       setCourseCategories(courseCats.map((c) => ({ id: c.name, name: c.name })))
     } catch (err) {
@@ -74,8 +72,8 @@ export default function Home() {
         err instanceof Error
           ? err.message
           : typeof err === 'string'
-          ? err
-          : 'Gagal memuat data'
+            ? err
+            : 'Gagal memuat data'
       console.error('Error loading data:', err)
       setError(message)
     } finally {
@@ -87,26 +85,19 @@ export default function Home() {
     loadData()
   }, [loadData])
 
-  // --- opsi kategori ---
-  const newsCategoryOptions: Category[] = [
-    { id: 'all', name: 'Show All' },
-    ...newsCategories,
-  ]
-  const courseCategoryOptions: Category[] = [
-    { id: 'all', name: 'Show All' },
-    ...courseCategories,
-  ]
+  // --- opsi kategori untuk CategoryBar ---
+  const newsCategoryOptions: Category[] = [{ id: 'all', name: 'Show All' }, ...newsCategories]
+  const courseCategoryOptions: Category[] = [{ id: 'all', name: 'Show All' }, ...courseCategories]
 
-  // --- filter berdasarkan kategori ---
+  // --- filter artikel berdasarkan kategori ---
   const filteredByCategory =
     selectedNewsCategory === 'all'
       ? articles
       : articles.filter(
-          (a) =>
-            a.category && a.category.toLowerCase() === selectedNewsCategory,
+          (a) => a.category && a.category.toLowerCase() === selectedNewsCategory,
         )
 
-  // --- filter berdasarkan pencarian ---
+  // --- filter artikel berdasarkan pencarian ---
   const keyword = searchKeyword.trim().toLowerCase()
   const filteredArticles = keyword
     ? filteredByCategory.filter(
@@ -117,10 +108,7 @@ export default function Home() {
     : filteredByCategory
 
   // --- pagination artikel ---
-  const totalArticlePages = Math.max(
-    1,
-    Math.ceil(filteredArticles.length / ITEMS_PER_PAGE),
-  )
+  const totalArticlePages = Math.max(1, Math.ceil(filteredArticles.length / ITEMS_PER_PAGE))
   const articleStartIndex = (currentArticlePage - 1) * ITEMS_PER_PAGE
   const paginatedArticles = filteredArticles.slice(
     articleStartIndex,
@@ -137,10 +125,7 @@ export default function Home() {
             c.course_category.toLowerCase() === selectedCourseCategory,
         )
 
-  const totalCoursePages = Math.max(
-    1,
-    Math.ceil(filteredCourses.length / ITEMS_PER_PAGE),
-  )
+  const totalCoursePages = Math.max(1, Math.ceil(filteredCourses.length / ITEMS_PER_PAGE))
   const courseStartIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE
   const paginatedCourses = filteredCourses.slice(
     courseStartIndex,
@@ -188,7 +173,6 @@ export default function Home() {
 
   return (
     <>
-
       {/* Search */}
       <div className="flex flex-col items-center mt-16 space-y-12">
         <div className="flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw]">
@@ -287,29 +271,17 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="hover:text-blue-700"
                         >
-                          <Image
-                            src="/facebook.svg"
-                            width={20}
-                            height={20}
-                            alt="Facebook"
-                          />
+                          <Image src="/facebook.svg" width={20} height={20} alt="Facebook" />
                         </a>
                         <a
                           href={`https://wa.me/?text=${encodeURIComponent(
-                            mainArticle.title +
-                              ' https://chayon.com/blog/' +
-                              mainArticle.slug,
+                            mainArticle.title + ' https://chayon.com/blog/' + mainArticle.slug,
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-green-600"
                         >
-                          <Image
-                            src="/whatsapp.svg"
-                            width={20}
-                            height={20}
-                            alt="WhatsApp"
-                          />
+                          <Image src="/whatsapp.svg" width={20} height={20} alt="WhatsApp" />
                         </a>
                         <a
                           href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
@@ -319,12 +291,7 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="hover:text-blue-500"
                         >
-                          <Image
-                            src="/twitter.svg"
-                            width={20}
-                            height={20}
-                            alt="Twitter"
-                          />
+                          <Image src="/twitter.svg" width={20} height={20} alt="Twitter" />
                         </a>
                         <a
                           href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
@@ -334,24 +301,14 @@ export default function Home() {
                           rel="noopener noreferrer"
                           className="hover:text-blue-800"
                         >
-                          <Image
-                            src="/linkedin.svg"
-                            width={20}
-                            height={20}
-                            alt="LinkedIn"
-                          />
+                          <Image src="/linkedin.svg" width={20} height={20} alt="LinkedIn" />
                         </a>
                         <div className="relative">
                           <button
                             onClick={() => handleCopyLink(mainArticle.slug)}
                             className="hover:text-gray-600 transition-colors"
                           >
-                            <Image
-                              src="/link.svg"
-                              width={20}
-                              height={20}
-                              alt="Copy Link"
-                            />
+                            <Image src="/link.svg" width={20} height={20} alt="Copy Link" />
                           </button>
                           {showCopyFeedback === mainArticle.slug && (
                             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -366,12 +323,7 @@ export default function Home() {
                         className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
                       >
                         Baca Selengkapnya
-                        <svg
-                          className="w-4 h-4 ml-1"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
+                        <svg className="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             fillRule="evenodd"
                             d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
@@ -392,9 +344,7 @@ export default function Home() {
               <ArticleCard key={article.id} article={article} />
             ))}
             {paginatedArticles.length === 0 && (
-              <p className="text-sm text-gray-500">
-                Tidak ada artikel untuk filter saat ini.
-              </p>
+              <p className="text-sm text-gray-500">Tidak ada artikel untuk filter saat ini.</p>
             )}
           </div>
 
@@ -427,7 +377,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* (opsional) category bar reuse */}
+            {/* Category kursus */}
             <div className="mb-8">
               <CategoryBar
                 categories={courseCategoryOptions}
@@ -445,9 +395,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {paginatedCourses.map((course) => {
                   const fallback =
-                    `/icons/${
-                      categoryImageMap[course.course_category || ''] ?? 'browser.svg'
-                    }`
+                    `/icons/${categoryImageMap[course.course_category || ''] ?? 'browser.svg'}`
                   const imageSrc = course.image_url || fallback
                   return (
                     <div
@@ -455,12 +403,7 @@ export default function Home() {
                       className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
                     >
                       <div className="relative h-[200px]">
-                        <Image
-                          src={imageSrc}
-                          alt={course.title}
-                          fill
-                          className="object-cover"
-                        />
+                        <Image src={imageSrc} alt={course.title} fill className="object-cover" />
                       </div>
                       <div className="p-6">
                         <div className="flex justify-between items-center mb-2">
@@ -469,9 +412,7 @@ export default function Home() {
                           </span>
                         </div>
                         <h3 className="text-xl font-bold mb-3">{course.title}</h3>
-                        <p className="text-gray-600 mb-5 line-clamp-3">
-                          {course.description}
-                        </p>
+                        <p className="text-gray-600 mb-5 line-clamp-3">{course.description}</p>
                         <Link
                           href={`/course-detail/${course.course_slug}`}
                           className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center"
