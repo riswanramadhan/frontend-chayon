@@ -2,8 +2,6 @@
 
 import Link from 'next/link'
 import Head from 'next/head'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 import { useState, useEffect } from 'react'
 import { Pagination } from '@/components/ui/Pagination'
 import { Newsletter } from '@/components/ui/Newsletter'
@@ -57,7 +55,6 @@ export default function MelamarKerjaPage() {
       <Head>
         <title>Tips Melamar Kerja - Chayon Online Course</title>
       </Head>
-      <Navbar />
       
       <main className="min-h-screen bg-white">
         {/* Search Section */}
@@ -134,7 +131,6 @@ export default function MelamarKerjaPage() {
       </main>
 
       <Newsletter />
-      <Footer />
     </>
   );
 }

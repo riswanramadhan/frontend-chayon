@@ -8,6 +8,7 @@ import { slugify } from '@/lib/slug'
 import { Textarea } from '@/components/ui/Textarea'
 import CategorySelect from '@/components/CategorySelect'
 import { COURSE_CATEGORIES } from '@/lib/constants'
+import UploadImage from '@/components/UploadImage'
 
 type Row = {
   id: string
@@ -91,11 +92,10 @@ export default function EditCoursePage() {
             options={COURSE_CATEGORIES}
             label="Kategori"
           />
-          <input
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Image URL"
+          <UploadImage
+            folder="courses"
             value={row.image_url ?? ''}
-            onChange={(e) => setRow({ ...row, image_url: e.target.value })}
+            onChange={(url) => setRow({ ...row, image_url: url })}
           />
           <Textarea
             className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[90px]"
@@ -114,14 +114,14 @@ export default function EditCoursePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50"
+              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-50 hover:bg-white/80"
             >
               {saving ? 'Menyimpan…' : 'Simpan'}
             </button>
             <button
               type="button"
               onClick={() => history.back()}
-              className="px-4 py-2 rounded-xl border border-white/20 text-sm"
+              className="px-4 py-2 rounded-xl border border-white/20 text-sm hover:bg-white/10"
             >
               Batal
             </button>

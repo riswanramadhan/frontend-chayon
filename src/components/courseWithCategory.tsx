@@ -3,8 +3,6 @@ import { ComponentType, useEffect, useState } from 'react';
 import { getAllCourses, Course, ApiError } from '@/lib/api';
 import { LoadingArticles } from '@/components/ui/LoadingArticles';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { Newsletter } from '@/components/ui/Newsletter';
 import { filterArticles, paginateData, getPageCount } from '@/lib/utils';
 
@@ -60,35 +58,26 @@ export function courseWithCategory(
 
     if (isLoading) {
       return (
-        <>
-          <Navbar />
-          <main className="min-h-screen bg-white">
-            <div className="container mx-auto px-4 py-16">
-              <LoadingArticles />
-            </div>
-          </main>
-          <Footer />
-        </>
+        <main className="min-h-screen bg-white">
+          <div className="container mx-auto px-4 py-16">
+            <LoadingArticles />
+          </div>
+        </main>
       );
     }
 
     if (error) {
       return (
-        <>
-          <Navbar />
-          <main className="min-h-screen bg-white">
-            <div className="container mx-auto px-4 py-16">
-              <ErrorMessage message={error} />
-            </div>
-          </main>
-          <Footer />
-        </>
+        <main className="min-h-screen bg-white">
+          <div className="container mx-auto px-4 py-16">
+            <ErrorMessage message={error} />
+          </div>
+        </main>
       );
     }
 
     return (
       <>
-        <Navbar />
         <WrappedComponent
           courses={courses}
           isLoading={isLoading}
@@ -101,7 +90,6 @@ export function courseWithCategory(
           paginatedArticles={paginatedArticles}
         />
         <Newsletter />
-        <Footer />
       </>
     );
   };

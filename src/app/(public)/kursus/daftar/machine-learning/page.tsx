@@ -1,13 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
 import { Newsletter } from '@/components/ui/Newsletter'
 
 export default function MachineLearning() {
   return (
     <>
-      <Navbar />
       <main>
         {/* Hero Section */}
         <div className="bg-gray-50 py-12 px-16">
@@ -144,7 +141,7 @@ export default function MachineLearning() {
         </div>
       </main>
       <Newsletter />
-      <Footer />
+      
     </>
   );
 }

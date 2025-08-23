@@ -5,16 +5,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SafeImage } from './SafeImage'
 
-import Navbar from './Navbar'
-import Footer from './Footer'
 import CategoryBar from './CategoryBar'
 import { ArticleCard } from './ArticleCard'
 import { Newsletter } from './ui/Newsletter'
 import { ErrorMessage } from './ui/ErrorMessage'
 import { Pagination } from './ui/Pagination'
 import { LoadingArticles } from './ui/LoadingArticles'
-import type { Article } from '@/lib/api'
-import { getAllArticles } from '@/lib/api'
+import type { Article, Course } from '@/lib/api'
+import {
+  getAllArticles,
+  getAllCourses,
+  getCategories,
+} from '@/lib/api'
 
 /** Map kategori → ikon default (digunakan sebagai fallback gambar kursus) */
 const categoryImageMap: Record<string, string> = {
@@ -35,86 +37,73 @@ interface Category {
 export default function Home() {
   // --- state utama ---
   const [articles, setArticles] = useState<Article[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   // UI state
   const [currentArticlePage, setCurrentArticlePage] = useState(1)
   const [currentCoursePage, setCurrentCoursePage] = useState(1)
-  const [selectedBlogCategory, setSelectedBlogCategory] = useState('all')
+  const [selectedNewsCategory, setSelectedNewsCategory] = useState('all')
+  const [selectedCourseCategory, setSelectedCourseCategory] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
   const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null)
 
+  const [newsCategories, setNewsCategories] = useState<Category[]>([])
+  const [courseCategories, setCourseCategories] = useState<Category[]>([])
+
   const ITEMS_PER_PAGE = 6
 
-  // --- Sample courses data (ganti dengan Supabase kalau sudah siap) ---
-  const courses = [
-    {
-      title: 'Bangun Brand dan Tingkatkan Penjualan',
-      category: 'Digital Marketing',
-      description:
-        'Pelajari SEO, strategi media sosial, dan iklan digital untuk pemasaran yang efektif.',
-      image_url: '/keyboard.svg',
-    },
-    {
-      title: 'Menciptakan Produk Digital yang Menarik',
-      category: 'UI/UX Design',
-      description:
-        'Pelajari prinsip desain antarmuka dan pengalaman pengguna untuk produk yang lebih baik.',
-      image_url: '/browser.svg',
-    },
-    {
-      title: 'Mulai dari Nol! Kuasai Machine Learning',
-      category: 'Machine Learning',
-      description:
-        'Pelajari konsep, algoritma, dan implementasi Machine Learning untuk karier di bidang AI.',
-      image_url: '/nlp.svg',
-    },
-  ]
-
-  // --- load data artikel ---
-  const loadArticles = useCallback(async (): Promise<void> => {
+  const loadData = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
-      const data = await getAllArticles() // -> Article[]
-      setArticles(data)
-    } catch (err) { // err: unknown
+      const [articleData, courseData, newsCats, courseCats] =
+        await Promise.all([
+          getAllArticles(),
+          getAllCourses(),
+          getCategories('news'),
+          getCategories('course'),
+        ])
+      setArticles(articleData)
+      setCourses(courseData)
+      setNewsCategories(newsCats.map((c) => ({ id: c.name, name: c.name })))
+      setCourseCategories(courseCats.map((c) => ({ id: c.name, name: c.name })))
+    } catch (err) {
       const message =
         err instanceof Error
           ? err.message
           : typeof err === 'string'
           ? err
-          : 'Gagal memuat artikel'
-      console.error('Error loading articles:', err)
+          : 'Gagal memuat data'
+      console.error('Error loading data:', err)
       setError(message)
     } finally {
       setIsLoading(false)
     }
   }, [])
-  
 
   useEffect(() => {
-    loadArticles()
-  }, [loadArticles])
+    loadData()
+  }, [loadData])
 
-  // --- kategori unik untuk CategoryBar ---
-  const uniqueCategories = Array.from(
-    new Set(articles.map((a) => a.category).filter(Boolean))
-  ) as string[]
-  const formattedCategories: Category[] = [
+  // --- opsi kategori ---
+  const newsCategoryOptions: Category[] = [
     { id: 'all', name: 'Show All' },
-    ...uniqueCategories.map((cat) => ({ id: cat.toLowerCase(), name: cat })),
+    ...newsCategories,
+  ]
+  const courseCategoryOptions: Category[] = [
+    { id: 'all', name: 'Show All' },
+    ...courseCategories,
   ]
 
   // --- filter berdasarkan kategori ---
   const filteredByCategory =
-    selectedBlogCategory === 'all'
+    selectedNewsCategory === 'all'
       ? articles
       : articles.filter(
           (a) =>
-            a.category &&
-            a.category.toLowerCase() === selectedBlogCategory,
+            a.category && a.category.toLowerCase() === selectedNewsCategory,
         )
 
   // --- filter berdasarkan pencarian ---
@@ -138,13 +127,22 @@ export default function Home() {
     articleStartIndex + ITEMS_PER_PAGE,
   )
 
-  // --- pagination kursus ---
+  // --- filter & pagination kursus ---
+  const filteredCourses =
+    selectedCourseCategory === 'all'
+      ? courses
+      : courses.filter(
+          (c) =>
+            c.course_category &&
+            c.course_category.toLowerCase() === selectedCourseCategory,
+        )
+
   const totalCoursePages = Math.max(
     1,
-    Math.ceil(courses.length / ITEMS_PER_PAGE),
+    Math.ceil(filteredCourses.length / ITEMS_PER_PAGE),
   )
   const courseStartIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE
-  const paginatedCourses = courses.slice(
+  const paginatedCourses = filteredCourses.slice(
     courseStartIndex,
     courseStartIndex + ITEMS_PER_PAGE,
   )
@@ -152,7 +150,11 @@ export default function Home() {
   // reset halaman saat ganti kategori
   useEffect(() => {
     setCurrentArticlePage(1)
-  }, [selectedBlogCategory])
+  }, [selectedNewsCategory])
+
+  useEffect(() => {
+    setCurrentCoursePage(1)
+  }, [selectedCourseCategory])
 
   // --- featured article ---
   const mainArticle = articles[0]
@@ -178,19 +180,14 @@ export default function Home() {
 
   if (error) {
     return (
-      <>
-        <Navbar />
-        <main className="mx-auto max-w-6xl px-4 md:px-6 py-12">
-          <ErrorMessage message={error} />
-        </main>
-        <Footer />
-      </>
+      <main className="mx-auto max-w-6xl px-4 md:px-6 py-12">
+        <ErrorMessage message={error} />
+      </main>
     )
   }
 
   return (
     <>
-      <Navbar />
 
       {/* Search */}
       <div className="flex flex-col items-center mt-16 space-y-12">
@@ -242,9 +239,9 @@ export default function Home() {
         {/* Latest Articles */}
         <section className="mb-16">
           <CategoryBar
-            categories={formattedCategories}
-            selectedCategory={selectedBlogCategory}
-            onCategoryChange={setSelectedBlogCategory}
+            categories={newsCategoryOptions}
+            selectedCategory={selectedNewsCategory}
+            onCategoryChange={setSelectedNewsCategory}
           />
 
           {/* Featured */}
@@ -433,56 +430,60 @@ export default function Home() {
             {/* (opsional) category bar reuse */}
             <div className="mb-8">
               <CategoryBar
-                categories={formattedCategories}
-                selectedCategory={selectedBlogCategory}
-                onCategoryChange={setSelectedBlogCategory}
+                categories={courseCategoryOptions}
+                selectedCategory={selectedCourseCategory}
+                onCategoryChange={setSelectedCourseCategory}
               />
             </div>
 
             {/* grid kursus */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedCourses.map((course, idx) => {
-                const fallback =
-                  `/icons/${
-                    categoryImageMap[course.category] ?? 'browser.svg'
-                  }`
-                const imageSrc = course.image_url || fallback
-                return (
-                  <div
-                    key={`${course.title}-${idx}`}
-                    className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
-                  >
-                    <div className="relative h-[200px]">
-                      <Image
-                        src={imageSrc}
-                        alt={course.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">
-                          {course.category}
-                        </span>
+            {paginatedCourses.length === 0 ? (
+              <p className="text-center text-gray-500">
+                Tidak ada kursus untuk filter saat ini.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {paginatedCourses.map((course) => {
+                  const fallback =
+                    `/icons/${
+                      categoryImageMap[course.course_category || ''] ?? 'browser.svg'
+                    }`
+                  const imageSrc = course.image_url || fallback
+                  return (
+                    <div
+                      key={course.id}
+                      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
+                    >
+                      <div className="relative h-[200px]">
+                        <Image
+                          src={imageSrc}
+                          alt={course.title}
+                          fill
+                          className="object-cover"
+                        />
                       </div>
-                      <h3 className="text-xl font-bold mb-3">{course.title}</h3>
-                      <p className="text-gray-600 mb-5 line-clamp-3">
-                        {course.description}
-                      </p>
-                      <Link
-                        href={`/kursus/${course.category
-                          .toLowerCase()
-                          .replace(/[\s/]+/g, '-')}`}
-                        className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center"
-                      >
-                        Daftar Sekarang
-                      </Link>
+                      <div className="p-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">
+                            {course.course_category}
+                          </span>
+                        </div>
+                        <h3 className="text-xl font-bold mb-3">{course.title}</h3>
+                        <p className="text-gray-600 mb-5 line-clamp-3">
+                          {course.description}
+                        </p>
+                        <Link
+                          href={`/course-detail/${course.course_slug}`}
+                          className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center"
+                        >
+                          Daftar Sekarang
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
 
             {/* Pagination kursus */}
             <div className="mt-8">
@@ -501,9 +502,8 @@ export default function Home() {
         </div>
       </main>
 
-      {/* newsletter & footer */}
+      {/* newsletter */}
       <Newsletter />
-      <Footer />
     </>
   )
 }

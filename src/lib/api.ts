@@ -131,3 +131,22 @@ export async function getAllCourses(): Promise<Course[]> {
   return (data ?? []).map(mapCourse)
 }
 
+// --------------- Category APIs ---------------
+type CategoryRow = {
+  id: string
+  name: string
+}
+
+export async function getCategories(
+  kind: 'news' | 'course',
+): Promise<CategoryRow[]> {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id,name')
+    .eq('kind', kind)
+    .order('name', { ascending: true })
+
+  if (error) throw new ApiError(error.message)
+  return data ?? []
+}
+
