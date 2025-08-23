@@ -6,6 +6,7 @@ import { slugify } from '@/lib/slug'
 import { AdminGuard } from '@/components/AdminGuard'
 import CategorySelect from '@/components/CategorySelect'
 import { NEWS_CATEGORIES } from '@/lib/constants'
+import UploadImage from '@/components/UploadImage'
 
 export default function NewNewsPage() {
   const supabase = createClient()
@@ -55,12 +56,7 @@ export default function NewNewsPage() {
             options={NEWS_CATEGORIES}
             label="Kategori (opsional)"
           />
-          <input
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Image URL (opsional)"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-          />
+          <UploadImage folder="news" value={imageUrl} onChange={setImageUrl} />
           <textarea
             className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[90px]"
             placeholder="Deskripsi ringkas (untuk kartu)"

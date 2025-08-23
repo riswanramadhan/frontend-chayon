@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button'
 import { slugify } from '@/lib/slug'
 import CategorySelect from '@/components/CategorySelect'
 import { COURSE_CATEGORIES } from '@/lib/constants'
+import UploadImage from '@/components/UploadImage'
 
 export default function NewCourse() {
   const supabase = createClient()
@@ -50,7 +51,7 @@ export default function NewCourse() {
               options={COURSE_CATEGORIES}
               label="Kategori"
             />
-            <Input placeholder="Image URL" value={imageUrl} onChange={e=>setImageUrl(e.target.value)} />
+            <UploadImage folder="courses" value={imageUrl} onChange={setImageUrl} />
             <Textarea placeholder="Deskripsi (opsional)" value={description} onChange={e=>setDescription(e.target.value)} />
             <Input placeholder="Link Google Form" value={gform} onChange={e=>setGform(e.target.value)} required />
             <Button type="submit" disabled={loading}>{loading ? 'Menyimpan…' : 'Simpan'}</Button>
