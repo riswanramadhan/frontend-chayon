@@ -14,7 +14,6 @@ import { LoadingArticles } from './ui/LoadingArticles'
 import type { Article, Course } from '@/lib/api'
 import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
 
-/** Map kategori → ikon default (digunakan sebagai fallback gambar kursus) */
 const categoryImageMap: Record<string, string> = {
   'Digital Marketing': 'keyboard.svg',
   'Machine Learning': 'ddos.svg',
@@ -24,20 +23,17 @@ const categoryImageMap: Record<string, string> = {
   'Jenjang Karir': 'wordle.svg',
 }
 
-/** Tipe kategori untuk CategoryBar */
 interface Category {
   id: string
   name: string
 }
 
 export default function Home() {
-  // --- state utama ---
   const [articles, setArticles] = useState<Article[]>([])
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // UI state
   const [currentArticlePage, setCurrentArticlePage] = useState(1)
   const [currentCoursePage, setCurrentCoursePage] = useState(1)
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('all')
@@ -50,7 +46,6 @@ export default function Home() {
 
   const ITEMS_PER_PAGE = 6
 
-  // --- load semua data paralel ---
   const loadData = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true)
@@ -65,8 +60,16 @@ export default function Home() {
       setArticles(articleData)
       setCourses(courseData)
 
-      setNewsCategories(newsCats.map((c) => ({ id: c.name, name: c.name })))
-      setCourseCategories(courseCats.map((c) => ({ id: c.name, name: c.name })))
+      // id kategori → lowercase agar konsisten saat filter
+      setNewsCategories([
+        { id: 'all', name: 'Show All' },
+        ...newsCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
+      ])
+
+      setCourseCategories([
+        { id: 'all', name: 'Show All' },
+        ...courseCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
+      ])
     } catch (err) {
       const message =
         err instanceof Error
@@ -85,20 +88,20 @@ export default function Home() {
     loadData()
   }, [loadData])
 
-  // --- opsi kategori untuk CategoryBar ---
-  const newsCategoryOptions: Category[] = [{ id: 'all', name: 'Show All' }, ...newsCategories]
-  const courseCategoryOptions: Category[] = [{ id: 'all', name: 'Show All' }, ...courseCategories]
+  const newsCategoryOptions = newsCategories
+  const courseCategoryOptions = courseCategories
 
-  // --- filter artikel berdasarkan kategori ---
+  // --- FILTER ARTIKEL ---
+  const keyword = searchKeyword.trim().toLowerCase()
+  const normalizedSelectedNews = (selectedNewsCategory || 'all').toLowerCase().trim()
+
   const filteredByCategory =
-    selectedNewsCategory === 'all'
+    normalizedSelectedNews === 'all'
       ? articles
       : articles.filter(
-          (a) => a.category && a.category.toLowerCase() === selectedNewsCategory,
+          (a) => (a.category?.toLowerCase().trim() ?? '') === normalizedSelectedNews,
         )
 
-  // --- filter artikel berdasarkan pencarian ---
-  const keyword = searchKeyword.trim().toLowerCase()
   const filteredArticles = keyword
     ? filteredByCategory.filter(
         (a) =>
@@ -107,7 +110,6 @@ export default function Home() {
       )
     : filteredByCategory
 
-  // --- pagination artikel ---
   const totalArticlePages = Math.max(1, Math.ceil(filteredArticles.length / ITEMS_PER_PAGE))
   const articleStartIndex = (currentArticlePage - 1) * ITEMS_PER_PAGE
   const paginatedArticles = filteredArticles.slice(
@@ -115,14 +117,14 @@ export default function Home() {
     articleStartIndex + ITEMS_PER_PAGE,
   )
 
-  // --- filter & pagination kursus ---
+  // --- FILTER & PAGINATION KURSUS ---
+  const normalizedSelectedCourse = (selectedCourseCategory || 'all').toLowerCase().trim()
+
   const filteredCourses =
-    selectedCourseCategory === 'all'
+    normalizedSelectedCourse === 'all'
       ? courses
       : courses.filter(
-          (c) =>
-            c.course_category &&
-            c.course_category.toLowerCase() === selectedCourseCategory,
+          (c) => (c.course_category?.toLowerCase().trim() ?? '') === normalizedSelectedCourse,
         )
 
   const totalCoursePages = Math.max(1, Math.ceil(filteredCourses.length / ITEMS_PER_PAGE))
@@ -132,19 +134,18 @@ export default function Home() {
     courseStartIndex + ITEMS_PER_PAGE,
   )
 
-  // reset halaman saat ganti kategori
+  // Reset halaman saat ganti filter
   useEffect(() => {
     setCurrentArticlePage(1)
-  }, [selectedNewsCategory])
+  }, [selectedNewsCategory, searchKeyword])
 
   useEffect(() => {
     setCurrentCoursePage(1)
   }, [selectedCourseCategory])
 
-  // --- featured article ---
-  const mainArticle = articles[0]
+  // Featured mengikuti filter (bukan selalu artikel[0])
+  const mainArticle = filteredArticles[0]
 
-  // --- copy link + feedback ---
   const handleCopyLink = useCallback((slug: string) => {
     const url = `https://chayon.com/blog/${slug}`
     navigator.clipboard
@@ -158,11 +159,7 @@ export default function Home() {
       })
   }, [])
 
-  // --- state tampilan ---
-  if (isLoading) {
-    return <LoadingArticles />
-  }
-
+  if (isLoading) return <LoadingArticles />
   if (error) {
     return (
       <main className="mx-auto max-w-6xl px-4 md:px-6 py-12">
@@ -171,11 +168,19 @@ export default function Home() {
     )
   }
 
+  // Search bar: garis + glow saat fokus & ketika mengetik
+  const searchActive = keyword.length > 0
+  const searchWrapperClass = [
+    'flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw] border transition-all duration-200',
+    searchActive ? 'border-blue-500 ring-2 ring-blue-500 shadow-md' : 'border-gray-300',
+    'focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:shadow-md',
+  ].join(' ')
+
   return (
     <>
       {/* Search */}
       <div className="flex flex-col items-center mt-16 space-y-12">
-        <div className="flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw]">
+        <div className={searchWrapperClass}>
           <Image
             src="/search.svg"
             width={24}
@@ -186,7 +191,7 @@ export default function Home() {
           <input
             type="text"
             placeholder="Pencarian"
-            className="outline-none text-gray-500 text-lg font-light w-full"
+            className="outline-none text-gray-700 text-lg font-light w-full bg-transparent"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
           />
@@ -225,10 +230,10 @@ export default function Home() {
           <CategoryBar
             categories={newsCategoryOptions}
             selectedCategory={selectedNewsCategory}
-            onCategoryChange={setSelectedNewsCategory}
+            onCategoryChange={(val: string) => setSelectedNewsCategory(val.toLowerCase())}
           />
 
-          {/* Featured */}
+          {/* Featured mengikuti kategori & keyword */}
           {mainArticle && (
             <div className="mb-8 mt-8">
               <div className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
@@ -338,15 +343,24 @@ export default function Home() {
             </div>
           )}
 
-          {/* Grid artikel */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {paginatedArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-            {paginatedArticles.length === 0 && (
-              <p className="text-sm text-gray-500">Tidak ada artikel untuk filter saat ini.</p>
-            )}
-          </div>
+          {/* Grid artikel (ikut filter kategori & keyword) */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {paginatedArticles.length > 0 ? (
+    paginatedArticles.map((article) => (
+      <ArticleCard key={article.id} article={article} />
+    ))
+  ) : (
+    <>
+      <p className="col-span-full mt-12 text-center text-xl font-semibold text-gray-700">
+        Tidak ada artikel yang cocok
+      </p>
+      <p className="col-span-full text-center text-sm text-gray-500">
+        Coba ubah kata kunci atau pilih kategori lain.
+      </p>
+    </>
+  )}
+</div>
+
 
           {/* Pagination artikel */}
           <div className="mt-8">
@@ -382,7 +396,7 @@ export default function Home() {
               <CategoryBar
                 categories={courseCategoryOptions}
                 selectedCategory={selectedCourseCategory}
-                onCategoryChange={setSelectedCourseCategory}
+                onCategoryChange={(val: string) => setSelectedCourseCategory(val.toLowerCase())}
               />
             </div>
 

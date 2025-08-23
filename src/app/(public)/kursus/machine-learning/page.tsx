@@ -56,19 +56,36 @@ function MachineLearningCoursePage({
       </Head>
       
       <main className="min-h-screen bg-gray-50">
-        {/* Search Section */}
-        <div className="flex flex-col items-center mt-16 space-y-12">
-          <div className="flex items-center bg-white rounded-full px-6 py-3 w-[554px] shadow-sm">
-            <Image src="/search.svg" width={24} height={24} alt="Search Icon" className="mr-3" />
-            <input 
-              type="text" 
-              placeholder="Pencarian" 
-              className="outline-none text-gray-500 text-lg font-light w-full"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-            />
-          </div>
-        </div>
+  {/* Search Section */}
+  <div className="flex flex-col items-center mt-16 space-y-12">
+    <div
+      className={[
+        "flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw]",
+        "border transition-all duration-200",
+        // glow saat mengetik
+        searchKeyword.trim().length
+          ? "border-blue-500 ring-2 ring-blue-500 shadow-md"
+          : "border-gray-300",
+        // glow saat fokus
+        "focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:shadow-md",
+      ].join(" ")}
+    >
+      <Image
+        src="/search.svg"
+        width={24}
+        height={24}
+        alt="Search Icon"
+        className="mr-3"
+      />
+      <input
+        type="text"
+        placeholder="Pencarian"
+        className="w-full text-lg font-light text-gray-700 bg-transparent outline-none focus:outline-none"
+        value={searchKeyword}
+        onChange={(e) => setSearchKeyword(e.target.value)}
+      />
+    </div>
+  </div>
 
         {/* Category Header */}
         <div className="container mx-auto px-4 mt-16">
