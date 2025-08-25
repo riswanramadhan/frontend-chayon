@@ -81,39 +81,41 @@ function MachineLearningPage({
           </div>
 
           {/* Articles Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {paginatedArticles.map((article, index) => (
-              <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative h-48 w-full">
-                  <SafeImage
-                    src={article.image_url ?? ''}
-                    alt={article.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <span className="text-sm text-gray-500">{article.date}</span>
+          {paginatedArticles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {paginatedArticles.map((article, index) => (
+                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                  <div className="relative h-48 w-full">
+                    <SafeImage
+                      src={article.image_url ?? ''}
+                      alt={article.title}
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
-                  <Link href={`/blog/${article.slug}`} className="text-blue-600 hover:text-blue-800 font-medium">
-                    Baca Selengkapnya →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
-                    {searchKeyword && (
-                      <p className="text-gray-400 mt-2">
-                        Coba kata kunci lain atau hapus filter pencarian.
-                      </p>
-                    )}
+                  <div className="p-6">
+                    <div className="flex items-center mb-4">
+                      <span className="text-sm text-gray-500">{article.date}</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                    <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
+                    <Link href={`/blog/${article.slug}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                      Baca Selengkapnya →
+                    </Link>
                   </div>
+                  </div>
+              ))}
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+              {searchKeyword && (
+                <p className="text-gray-400 mt-2">
+                  Coba kata kunci lain atau hapus filter pencarian.
+                </p>
+              )}
+            </div>
+          )}
                
           
           {/* Pagination */}

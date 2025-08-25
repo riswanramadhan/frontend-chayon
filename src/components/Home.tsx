@@ -13,6 +13,7 @@ import { Pagination } from './ui/Pagination'
 import { LoadingArticles } from './ui/LoadingArticles'
 import type { Article, Course } from '@/lib/api'
 import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
+import { slugify } from '@/lib/slug'
 
 const categoryImageMap: Record<string, string> = {
   'Digital Marketing': 'keyboard.svg',
@@ -39,6 +40,7 @@ export default function Home() {
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('all')
   const [selectedCourseCategory, setSelectedCourseCategory] = useState('all')
   const [searchKeyword, setSearchKeyword] = useState('')
+  const [courseSearchKeyword, setCourseSearchKeyword] = useState('')
   const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null)
 
   const [newsCategories, setNewsCategories] = useState<Category[]>([])
@@ -50,11 +52,10 @@ export default function Home() {
     try {
       setIsLoading(true)
       setError(null)
-      const [articleData, courseData, newsCats, courseCats] = await Promise.all([
+      const [articleData, courseData, newsCats] = await Promise.all([
         getAllArticles(),
         getAllCourses(),
         getCategories('news'),
-        getCategories('course'),
       ])
 
       setArticles(articleData)
@@ -66,9 +67,16 @@ export default function Home() {
         ...newsCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
       ])
 
+      const uniqueCourseCategories = Array.from(
+        new Set(courseData.map((c) => c.course_category).filter(Boolean)),
+      ) as string[]
+
       setCourseCategories([
         { id: 'all', name: 'Show All' },
-        ...courseCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
+        ...uniqueCourseCategories.map((name) => ({
+          id: slugify(name),
+          name,
+        })),
       ])
     } catch (err) {
       const message =
@@ -118,14 +126,23 @@ export default function Home() {
   )
 
   // --- FILTER & PAGINATION KURSUS ---
-  const normalizedSelectedCourse = (selectedCourseCategory || 'all').toLowerCase().trim()
+  const normalizedSelectedCourse = (selectedCourseCategory || 'all').toLowerCase().trim();
+const courseKeyword = searchKeyword.trim().toLowerCase();
 
-  const filteredCourses =
+  const filteredCourseByCategory =
     normalizedSelectedCourse === 'all'
       ? courses
       : courses.filter(
-          (c) => (c.course_category?.toLowerCase().trim() ?? '') === normalizedSelectedCourse,
+        (c) => slugify(c.course_category ?? '') === normalizedSelectedCourse,
         )
+
+        const filteredCourses = courseKeyword
+        ? filteredCourseByCategory.filter(
+            (c) =>
+              c.title.toLowerCase().includes(courseKeyword) ||
+              (c.description?.toLowerCase().includes(courseKeyword) ?? false),
+          )
+        : filteredCourseByCategory
 
   const totalCoursePages = Math.max(1, Math.ceil(filteredCourses.length / ITEMS_PER_PAGE))
   const courseStartIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE
@@ -141,7 +158,7 @@ export default function Home() {
 
   useEffect(() => {
     setCurrentCoursePage(1)
-  }, [selectedCourseCategory])
+  }, [selectedCourseCategory, courseSearchKeyword])
 
   // Featured mengikuti filter (bukan selalu artikel[0])
   const mainArticle = filteredArticles[0]
@@ -176,6 +193,15 @@ export default function Home() {
     'focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:shadow-md',
   ].join(' ')
 
+  const courseSearchActive = courseSearchKeyword.trim().length > 0
+  const courseSearchWrapperClass = [
+    'flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw] border transition-all duration-200',
+    courseSearchActive
+      ? 'border-blue-500 ring-2 ring-blue-500 shadow-md'
+      : 'border-gray-300',
+    'focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:shadow-md',
+  ].join(' ')
+
   return (
     <>
       {/* Search */}
@@ -190,7 +216,7 @@ export default function Home() {
           />
           <input
             type="text"
-            placeholder="Pencarian"
+            placeholder="Cari Artikel"
             className="outline-none text-gray-700 text-lg font-light w-full bg-transparent"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
@@ -380,6 +406,24 @@ export default function Home() {
         {/* Join Our Learning Journey */}
         <div className="w-full py-16 bg-gray-50 -mx-4 px-4">
           <div className="max-w-6xl mx-auto">
+          <div className="flex justify-center mb-12">
+              <div className={courseSearchWrapperClass}>
+                <Image
+                  src="/search.svg"
+                  width={24}
+                  height={24}
+                  alt="Search Icon"
+                  className="mr-3"
+                />
+                <input
+                  type="text"
+                  placeholder="Pencarian kursus"
+                  className="outline-none text-gray-700 text-lg font-light w-full bg-transparent"
+                  value={courseSearchKeyword}
+                  onChange={(e) => setCourseSearchKeyword(e.target.value)}
+                />
+              </div>
+            </div>
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-4">
                 Join Our Learning Journey
@@ -392,13 +436,15 @@ export default function Home() {
             </div>
 
             {/* Category kursus */}
-            <div className="mb-8">
-              <CategoryBar
-                categories={courseCategoryOptions}
-                selectedCategory={selectedCourseCategory}
-                onCategoryChange={(val: string) => setSelectedCourseCategory(val.toLowerCase())}
-              />
-            </div>
+            {courses.length > 0 && (
+              <div className="mb-8">
+                <CategoryBar
+                  categories={courseCategoryOptions}
+                  selectedCategory={selectedCourseCategory}
+                  onCategoryChange={(val: string) => setSelectedCourseCategory(val)}
+                />
+              </div>
+            )}
 
             {/* grid kursus */}
             {paginatedCourses.length === 0 ? (
