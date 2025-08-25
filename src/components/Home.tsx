@@ -50,11 +50,10 @@ export default function Home() {
     try {
       setIsLoading(true)
       setError(null)
-      const [articleData, courseData, newsCats, courseCats] = await Promise.all([
+      const [articleData, courseData, newsCats] = await Promise.all([
         getAllArticles(),
         getAllCourses(),
         getCategories('news'),
-        getCategories('course'),
       ])
 
       setArticles(articleData)
@@ -66,9 +65,17 @@ export default function Home() {
         ...newsCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
       ])
 
+      // Build course categories from actual courses to ensure filter matches available data
+      const courseCategoryMap = new Map<string, string>()
+      for (const course of courseData) {
+        const name = (course.course_category ?? '').trim()
+        if (!name) continue
+        const id = name.toLowerCase()
+        if (!courseCategoryMap.has(id)) courseCategoryMap.set(id, name)
+      }
       setCourseCategories([
         { id: 'all', name: 'Show All' },
-        ...courseCats.map((c) => ({ id: c.name.toLowerCase(), name: c.name })),
+        ...Array.from(courseCategoryMap, ([id, name]) => ({ id, name })),
       ])
     } catch (err) {
       const message =

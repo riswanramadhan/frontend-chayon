@@ -9,11 +9,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
   const { data } = await supabase
     .from('news')
     .select('title,image_url')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
   if (!data) return { title: 'Berita' }
   return {
@@ -22,8 +23,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const { data } = await supabase.from('news').select('*').eq('slug', params.slug).single()
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const { data } = await supabase.from('news').select('*').eq('slug', slug).single()
   if (!data) notFound()
   return (
     <div className="max-w-3xl mx-auto space-y-4 py-8">
