@@ -8,11 +8,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function generateMetadata({ params }: { params: { course_slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ course_slug: string }> }): Promise<Metadata> {
+  const { course_slug } = await params
   const { data } = await supabase
     .from('courses')
     .select('title,image_url')
-    .eq('course_slug', params.course_slug)
+    .eq('course_slug', course_slug)
     .single()
   if (!data) return { title: 'Kursus' }
   return {
@@ -21,11 +22,12 @@ export async function generateMetadata({ params }: { params: { course_slug: stri
   }
 }
 
-export default async function Page({ params }: { params: { course_slug: string } }) {
+export default async function Page({ params }: { params: Promise<{ course_slug: string }> }) {
+  const { course_slug } = await params
   const { data } = await supabase
     .from('courses')
     .select('*')
-    .eq('course_slug', params.course_slug)
+    .eq('course_slug', course_slug)
     .single()
   if (!data) notFound()
   return (
