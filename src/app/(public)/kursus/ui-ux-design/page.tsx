@@ -5,6 +5,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { courseWithCategory } from '@/components/courseWithCategory'
 import { Course } from '@/lib/api'
+import { formatIDR } from '@/lib/utils'
 
 interface UiUxDesignCoursePageProps {
   courses: Course[];
@@ -128,10 +129,15 @@ function UiUxDesignCoursePage({
                           fill
                           className="object-cover"
                         />
+                         {article.price !== null && (
+                          <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
+                            {formatIDR(article.price)}
+                          </div>
+                        )}
                       </div>
                       <div className="p-6">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
+                          <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-full">
                             UI/UX Design
                           </span>
                           <span className="text-sm text-gray-500">{article.title}</span>

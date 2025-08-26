@@ -14,6 +14,7 @@ import { LoadingArticles } from './ui/LoadingArticles'
 import type { Article, Course } from '@/lib/api'
 import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
 import { slugify } from '@/lib/slug'
+import { formatIDR } from '@/lib/utils'
 
 const categoryImageMap: Record<string, string> = {
   'Digital Marketing': 'keyboard.svg',
@@ -465,10 +466,10 @@ export default function Home() {
                     <div className="relative h-[200px]">
                       <Image src={imageSrc} alt={course.title} fill className="object-cover" />
                       {course.price !== null && (
-                        <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
-                          Rp{course.price}
-                        </div>
-                      )}
+                          <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
+                            {formatIDR(course.price)}
+                          </div>
+                        )}
                     </div>
                     <div className="p-6">
                       <div className="flex justify-between items-center mb-2">

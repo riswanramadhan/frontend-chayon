@@ -53,12 +53,18 @@ export default function NewCourse() {
             options={COURSE_CATEGORIES}
             label="Kategori"
           />
-          <Input
-            type="number"
-            placeholder="Harga Kursus"
-            value={price}
-            onChange={e=>setPrice(e.target.value)}
-          />
+          <div className="flex">
+            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-white/20 bg-white/10 text-sm text-white">
+              Rp
+            </span>
+            <Input
+              type="number"
+              placeholder="Harga Kursus"
+              value={price}
+              onChange={e=>setPrice(e.target.value)}
+              className="rounded-l-none border-l-0 border-white/20 bg-transparent"
+            />
+          </div>
           <UploadImage folder="courses" value={imageUrl} onChange={setImageUrl} />
             <Textarea placeholder="Deskripsi (opsional)" value={description} onChange={e=>setDescription(e.target.value)} />
             <Input placeholder="Link Google Form" value={gform} onChange={e=>setGform(e.target.value)} required />

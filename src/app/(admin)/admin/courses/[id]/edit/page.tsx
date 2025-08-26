@@ -94,15 +94,20 @@ export default function EditCoursePage() {
             options={COURSE_CATEGORIES}
             label="Kategori"
           />
-          <input
-            type="number"
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
-            placeholder="Harga Kursus"
-            value={row.price ?? ''}
-            onChange={(e) =>
-              setRow({ ...row, price: e.target.value ? Number(e.target.value) : null })
-            }
-          />
+          <div className="flex">
+            <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-white/20 bg-white/10 text-white">
+              Rp
+            </span>
+            <input
+              type="number"
+              className="w-full rounded-r-xl border border-white/20 bg-transparent p-3 border-l-0"
+              placeholder="Harga Kursus"
+              value={row.price ?? ''}
+              onChange={(e) =>
+                setRow({ ...row, price: e.target.value ? Number(e.target.value) : null })
+              }
+            />
+          </div>
           <UploadImage
             folder="courses"
             value={row.image_url ?? ''}

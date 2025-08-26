@@ -5,6 +5,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Course } from '@/lib/api'
 import { courseWithCategory } from '@/components/courseWithCategory'
+import { formatIDR } from '@/lib/utils'
 
 interface MachineLearningCoursePageProps {
   courses: Course[];
@@ -129,10 +130,10 @@ function MachineLearningCoursePage({
                          className="object-cover"
                        />
                        {article.price !== null && (
-                         <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
-                           Rp{article.price}
-                         </div>
-                       )}
+                          <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
+                            {formatIDR(article.price)}
+                          </div>
+                        )}
                      </div>
                      <div className="p-6">
                        <div className="flex justify-between items-center mb-2">

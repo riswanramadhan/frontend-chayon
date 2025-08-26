@@ -5,6 +5,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Course } from '@/lib/api'
 import { courseWithCategory } from '@/components/courseWithCategory'
+import { formatIDR } from '@/lib/utils'
 
 interface DigitalMarketingCoursePageProps {
   courses: Course[];
@@ -106,64 +107,64 @@ function DigitalMarketingCoursePage({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
               {Array(6).fill(0).map((_, index) => (
                 <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm animate-pulse">
-                <div className="h-48 bg-gray-200"></div>
-                <div className="p-6">
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
-                  <div className="h-10 bg-gray-200 rounded"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            {/* Articles Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {paginatedArticles.length > 0 ? (
-                paginatedArticles.map((article, index) => (
-                  <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
-                    <div className="relative h-48">
-                      <Image
-                        src={article.image_url || '/keyboard.svg'}
-                        alt={article.title}
-                        fill
-                        className="object-cover"
-                      />
-                      {article.price !== null && (
-                        <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
-                          Rp{article.price}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-6">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-full">
-                          Digital Marketing
-                        </span>
-                        <span className="text-sm text-gray-500">{article.title}</span>
-                      </div>
-                      <h3 className="text-xl font-bold mb-2 leading-tight">{article.title}</h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2">{article.description}</p>
-                      <Link 
-                        // href={`/blog/${article.slug}`}
-                        href={`/course-detail/${article.course_slug}`}
-                        className="block w-full bg-black text-white text-center py-3 rounded-md font-medium hover:bg-gray-800 transition-colors"
-                      >
-                        Daftar Sekarang
-                      </Link>
-                    </div>
+                  <div className="h-48 bg-gray-200"></div>
+                  <div className="p-6">
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-10 bg-gray-200 rounded"></div>
                   </div>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
-                  {searchKeyword && (
-                    <p className="text-gray-400 mt-2">
-                      Coba kata kunci lain atau hapus filter pencarian.
-                    </p>
-                  )}
                 </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Articles Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                {paginatedArticles.length > 0 ? (
+                  paginatedArticles.map((article, index) => (
+                    <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm">
+                      <div className="relative h-48">
+                        <Image
+                          src={article.image_url || '/keyboard.svg'}
+                          alt={article.title}
+                          fill
+                          className="object-cover"
+                        />
+                        {article.price !== null && (
+                          <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
+                            {formatIDR(article.price)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-full">
+                            Digital Marketing
+                          </span>
+                          <span className="text-sm text-gray-500">{article.title}</span>
+                        </div>
+                        <h3 className="text-xl font-bold mb-2 leading-tight">{article.title}</h3>
+                        <p className="text-gray-600 mb-4 line-clamp-2">{article.description}</p>
+                        <Link 
+                          // href={`/blog/${article.slug}`}
+                          href={`/course-detail/${article.course_slug}`}
+                          className="block w-full bg-black text-white text-center py-3 rounded-md font-medium hover:bg-gray-800 transition-colors"
+                        >
+                          Daftar Sekarang
+                        </Link>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+                    {searchKeyword && (
+                      <p className="text-gray-400 mt-2">
+                        Coba kata kunci lain atau hapus filter pencarian.
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
 
