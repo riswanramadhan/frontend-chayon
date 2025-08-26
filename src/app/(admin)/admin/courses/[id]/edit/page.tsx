@@ -18,6 +18,7 @@ type Row = {
   description: string | null
   image_url: string | null
   gform_url: string | null
+  price: number | null
 }
 
 export default function EditCoursePage() {
@@ -57,6 +58,7 @@ export default function EditCoursePage() {
         description: row.description,
         image_url: row.image_url || null,
         gform_url: row.gform_url,
+        price: row.price,
       })
       .eq('id', row.id)
     setSaving(false)
@@ -91,6 +93,15 @@ export default function EditCoursePage() {
             onChange={(v) => setRow({ ...row, course_category: v })}
             options={COURSE_CATEGORIES}
             label="Kategori"
+          />
+          <input
+            type="number"
+            className="w-full rounded-xl border border-white/20 bg-transparent p-3"
+            placeholder="Harga Kursus"
+            value={row.price ?? ''}
+            onChange={(e) =>
+              setRow({ ...row, price: e.target.value ? Number(e.target.value) : null })
+            }
           />
           <UploadImage
             folder="courses"

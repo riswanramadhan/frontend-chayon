@@ -40,7 +40,7 @@ export default function KursusPage() {
                   href={course.gform_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-2 text-blue-500 hover:underline"
+                  className="inline-block mt-2 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
                 >
                   Daftar Sekarang
                 </a>

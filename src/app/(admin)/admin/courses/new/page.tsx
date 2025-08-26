@@ -20,6 +20,7 @@ export default function NewCourse() {
   const [category, setCategory] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [gform, setGform] = useState('')
+  const [price, setPrice] = useState('')
   const [loading, setLoading] = useState(false)
 
   const save = async (e: React.FormEvent) => {
@@ -32,6 +33,7 @@ export default function NewCourse() {
       description: description || null,
       image_url: imageUrl || null,
       gform_url: gform,
+      price: price ? Number(price) : null,
     })
     setLoading(false)
     if (!error) router.replace('/admin/courses')
@@ -44,14 +46,20 @@ export default function NewCourse() {
         <h1 className="text-2xl font-semibold">Tambah Kursus</h1>
         <Card>
           <form onSubmit={save} className="space-y-3">
-            <Input placeholder="Judul" value={title} onChange={e=>setTitle(e.target.value)} required />
-            <CategorySelect
-              value={category}
-              onChange={setCategory}
-              options={COURSE_CATEGORIES}
-              label="Kategori"
-            />
-            <UploadImage folder="courses" value={imageUrl} onChange={setImageUrl} />
+          <Input placeholder="Judul" value={title} onChange={e=>setTitle(e.target.value)} required />
+          <CategorySelect
+            value={category}
+            onChange={setCategory}
+            options={COURSE_CATEGORIES}
+            label="Kategori"
+          />
+          <Input
+            type="number"
+            placeholder="Harga Kursus"
+            value={price}
+            onChange={e=>setPrice(e.target.value)}
+          />
+          <UploadImage folder="courses" value={imageUrl} onChange={setImageUrl} />
             <Textarea placeholder="Deskripsi (opsional)" value={description} onChange={e=>setDescription(e.target.value)} />
             <Input placeholder="Link Google Form" value={gform} onChange={e=>setGform(e.target.value)} required />
             <Button type="submit" disabled={loading}>{loading ? 'Menyimpan…' : 'Simpan'}</Button>

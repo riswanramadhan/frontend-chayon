@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { course_slug: string }
   return (
     <div className="max-w-3xl mx-auto space-y-4 py-8">
       {data.course_category && (
-        <span className="inline-block bg-gray-100 px-3 py-1 rounded-full text-sm">
+        <span className="inline-block bg-black text-white px-3 py-1 rounded-full text-sm">
           {data.course_category}
         </span>
       )}
@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: { course_slug: string }
           href={data.gform_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md"
+          className="inline-block px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
         >
           Daftar Sekarang
         </a>

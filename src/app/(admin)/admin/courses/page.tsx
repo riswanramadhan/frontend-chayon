@@ -12,6 +12,7 @@ type Course = {
   course_slug: string | null
   course_category: string | null
   gform_url: string | null
+  price: number | null
   created_at: string | null
 }
 
@@ -22,7 +23,7 @@ export default function AdminCourses() {
   const load = async () => {
     const { data } = await supabase
       .from('courses')
-      .select('id,title,course_slug,course_category,gform_url,created_at')
+      .select('id,title,course_slug,course_category,gform_url,price,created_at')
       .order('created_at', { ascending: false })
     setItems(data || [])
   }
@@ -50,13 +51,14 @@ export default function AdminCourses() {
           <div className="overflow-x-auto rounded-2xl border border-white/10">
             <table className="min-w-full text-sm">
               <thead className="bg-white/5 border-b border-white/10">
-                <tr>
-                  <th className="text-left p-3">Judul</th>
-                  <th className="text-left p-3">Kategori</th>
-                  <th className="text-left p-3">Slug</th>
-                  <th className="text-left p-3">GForm</th>
-                  <th className="text-left p-3 w-40">Aksi</th>
-                </tr>
+              <tr>
+                <th className="text-left p-3">Judul</th>
+                <th className="text-left p-3">Kategori</th>
+                <th className="text-left p-3">Slug</th>
+                <th className="text-left p-3">Harga</th>
+                <th className="text-left p-3">GForm</th>
+                <th className="text-left p-3 w-40">Aksi</th>
+              </tr>
               </thead>
               <tbody>
                 {items.map((r) => (
@@ -64,6 +66,7 @@ export default function AdminCourses() {
                     <td className="p-3">{r.title}</td>
                     <td className="p-3">{r.course_category || '-'}</td>
                     <td className="p-3">{r.course_slug || '-'}</td>
+                    <td className="p-3">{r.price ?? '-'}</td>
                     <td className="p-3 truncate max-w-[160px]">{r.gform_url}</td>
                     <td className="p-3">
                       <div className="flex gap-2">

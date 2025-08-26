@@ -225,7 +225,7 @@ export default function Home() {
       </div>
 
       {/* Hero */}
-      <div className="w-full bg-gradient-to-b from-white/50 to-white py-16">
+      <div className="w-full bg-gray-100 py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-8">
             <p className="text-sm font-medium text-black/80 mb-2">
@@ -439,68 +439,74 @@ export default function Home() {
             {courses.length > 0 && (
               <div className="mb-8">
                 <CategoryBar
-                  categories={courseCategoryOptions}
-                  selectedCategory={selectedCourseCategory}
-                  onCategoryChange={(val: string) => setSelectedCourseCategory(val)}
-                />
-              </div>
-            )}
-
-            {/* grid kursus */}
-            {paginatedCourses.length === 0 ? (
-              <p className="text-center text-gray-500">
-                Tidak ada kursus untuk filter saat ini.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {paginatedCourses.map((course) => {
-                  const fallback =
-                    `/icons/${categoryImageMap[course.course_category || ''] ?? 'browser.svg'}`
-                  const imageSrc = course.image_url || fallback
-                  return (
-                    <div
-                      key={course.id}
-                      className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
-                    >
-                      <div className="relative h-[200px]">
-                        <Image src={imageSrc} alt={course.title} fill className="object-cover" />
-                      </div>
-                      <div className="p-6">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="inline-block bg-gray-100 text-xs font-medium px-3 py-1 rounded-full">
-                            {course.course_category}
-                          </span>
-                        </div>
-                        <h3 className="text-xl font-bold mb-3">{course.title}</h3>
-                        <p className="text-gray-600 mb-5 line-clamp-3">{course.description}</p>
-                        <Link
-                          href={`/course-detail/${course.course_slug}`}
-                          className="block w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center"
-                        >
-                          Daftar Sekarang
-                        </Link>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Pagination kursus */}
-            <div className="mt-8">
-              <Pagination
-                currentPage={currentCoursePage}
-                totalPages={totalCoursePages}
-                onPageChange={(p: number) => {
-                  setCurrentCoursePage(p)
-                  if (typeof window !== 'undefined') {
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
-                }}
+                categories={courseCategoryOptions}
+                selectedCategory={selectedCourseCategory}
+                onCategoryChange={(val: string) => setSelectedCourseCategory(val)}
               />
             </div>
+          )}
+
+          {/* grid kursus */}
+          {paginatedCourses.length === 0 ? (
+            <p className="text-center text-gray-500">
+              Tidak ada kursus untuk filter saat ini.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedCourses.map((course) => {
+                const fallback =
+                  `/icons/${categoryImageMap[course.course_category || ''] ?? 'browser.svg'}`
+                const imageSrc = course.image_url || fallback
+                return (
+                  <div
+                    key={course.id}
+                    className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
+                  >
+                    <div className="relative h-[200px]">
+                      <Image src={imageSrc} alt={course.title} fill className="object-cover" />
+                      {course.price !== null && (
+                        <div className="absolute top-0 right-0 bg-black text-white text-xs px-2 py-1 rounded-bl-lg">
+                          Rp{course.price}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="inline-block bg-black text-white text-xs font-medium px-3 py-1 rounded-full">
+                          {course.course_category}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold mb-3">{course.title}</h3>
+                      <p className="text-gray-600 mb-5 line-clamp-3">{course.description}</p>
+                      <Link
+                        href={`/course-detail/${course.course_slug}`}
+                        className="block w-full py-2 bg-black text-white rounded-md hover:bg-gray-800 text-center"
+                      >
+                        Daftar Sekarang
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Pagination kursus */}
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentCoursePage}
+              totalPages={totalCoursePages}
+              onPageChange={(p: number) => {
+                setCurrentCoursePage(p)
+                if (typeof window !== 'undefined') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }
+              }}
+            />
           </div>
         </div>
+      </div>
+
       </main>
 
       {/* newsletter */}

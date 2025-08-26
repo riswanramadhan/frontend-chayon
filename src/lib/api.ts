@@ -22,6 +22,7 @@ export type Course = {
   description: string | null
   image_url: string | null
   gform_url: string | null
+  price: number | null
   created_at: string
 }
 
@@ -71,6 +72,7 @@ type CourseRow = {
   description: string | null
   image_url: string | null
   gform_url: string | null
+  price: number | null
   created_at: string | null
 }
 
@@ -83,6 +85,7 @@ function mapCourse(row: CourseRow): Course {
     description: row.description ?? null,
     image_url: row.image_url ?? null,
     gform_url: row.gform_url ?? null,
+    price: row.price ?? null,
     created_at: row.created_at ?? new Date().toISOString(),
   }
 }
@@ -124,7 +127,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 export async function getAllCourses(): Promise<Course[]> {
   const { data, error } = await supabase
     .from('courses')
-    .select('id,title,course_slug,course_category,description,image_url,gform_url,created_at')
+    .select('id,title,course_slug,course_category,description,image_url,gform_url,price,created_at')
     .order('created_at', { ascending: false })
 
   if (error) throw new ApiError(error.message)
@@ -149,4 +152,3 @@ export async function getCategories(
   if (error) throw new ApiError(error.message)
   return data ?? []
 }
-
