@@ -77,86 +77,94 @@ export default function JenjangKarirPage() {
         height={24}
         alt="Search Icon"
         className="mr-3"
-      />
-      <input
-        type="text"
-        placeholder="Pencarian"
-        className="w-full text-lg font-light text-gray-700 bg-transparent outline-none focus:outline-none"
-        value={searchKeyword}
-        onChange={(e) => setSearchKeyword(e.target.value)}
-      />
+        />
+        <input
+          type="text"
+          placeholder="Pencarian"
+          className="w-full text-lg font-light text-gray-700 bg-transparent outline-none focus:outline-none"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+        />
+      </div>
     </div>
-  </div>
-
-        {/* Category Header */}
-        <div className="container mx-auto px-4 mt-16">
-          <div className="max-w-[800px] mx-auto text-center">
-            <span className="text-sm font-medium text-black-500 mb-2 block">Kategori</span>
-            <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-4">
-              Jenjang Karir
-            </h1>
-            <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
-            Temukan berbagai wawasan seputar pengembangan jenjang karir, mulai dari tips naik jabatan, membangun personal branding, hingga strategi mencapai tujuan profesional.
-            Dapatkan informasi eksklusif serta kisah inspiratif dari para profesional dan pemimpin di berbagai industri.
-            </p>
-          </div>
-
-          {/* Article Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+  
+          {/* Category Header */}
+          <div className="container mx-auto px-4 mt-16">
+            <div className="max-w-[800px] mx-auto text-center">
+              <span className="text-sm font-medium text-black-500 mb-2 block">Kategori</span>
+              <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-4">
+                Jenjang Karir
+              </h1>
+              <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
+              Temukan berbagai wawasan seputar pengembangan jenjang karir, mulai dari tips naik jabatan, membangun personal branding, hingga strategi mencapai tujuan profesional.
+              Dapatkan informasi eksklusif serta kisah inspiratif dari para profesional dan pemimpin di berbagai industri.
+              </p>
+            </div>
+  
+            {/* Article Grid */}
             {loading ? (
               <LoadingArticles />
             ) : error ? (
               <ErrorMessage message={error} />
-            ) : currentArticles.map((article) => (
-              <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative h-48">
-                  <SafeImage
-                    src={article.image_url ?? ''}
-                    alt={article.title}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
-                      {article.category}
-                    </span>
-                    <span className="text-sm text-gray-500">{article.date}</span>
+            ) : filteredArticles.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                {currentArticles.map((article) => (
+                  <div
+                    key={article.id}
+                    className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
+                  >
+                    <div className="relative h-48">
+                      <SafeImage
+                        src={article.image_url ?? ''}
+                        alt={article.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
+                          {article.category}
+                        </span>
+                        <span className="text-sm text-gray-500">{article.date}</span>
+                      </div>
+                      <h3 className="text-xl font-bold mb-2">{article.title}</h3>
+                      <p className="text-gray-600 mb-4">{article.description}</p>
+                      <Link
+                        href={`/blog/${article.slug}`}
+                        className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                      >
+                        Baca Selengkapnya →
+                      </Link>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{article.title}</h3>
-                  <p className="text-gray-600 mb-4">{article.description}</p>
-                  <Link href={`/blog/${article.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-                    Baca Selengkapnya →
-                  </Link>
-                </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+                {searchKeyword && (
+                  <p className="text-gray-400 mt-2">
+                    Coba kata kunci lain atau hapus filter pencarian.
+                  </p>
+                )}
+              </div>
+            )}
+  
+            {/* Pagination */}
+            {!loading && !error && (
+              <div className="mt-8">
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </div>
-
-          <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
-                    {searchKeyword && (
-                      <p className="text-gray-400 mt-2">
-                        Coba kata kunci lain atau hapus filter pencarian.
-                      </p>
-                    )}
-                  </div>
-
-          {/* Pagination */}
-          {!loading && !error && (
-            <div className="mt-8">
-              <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
-          )}
-        </div>
-      </main>
-
-      <Newsletter />
-    </>
-  );
-}
+        </main>
+  
+        <Newsletter />
+      </>
+    );
+  }

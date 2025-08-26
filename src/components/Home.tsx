@@ -39,7 +39,7 @@ export default function Home() {
   const [currentCoursePage, setCurrentCoursePage] = useState(1)
   const [selectedNewsCategory, setSelectedNewsCategory] = useState('all')
   const [selectedCourseCategory, setSelectedCourseCategory] = useState('all')
-  const [searchKeyword, setSearchKeyword] = useState('')
+  const [newsSearchKeyword, setNewsSearchKeyword] = useState('')
   const [courseSearchKeyword, setCourseSearchKeyword] = useState('')
   const [showCopyFeedback, setShowCopyFeedback] = useState<string | null>(null)
 
@@ -100,7 +100,7 @@ export default function Home() {
   const courseCategoryOptions = courseCategories
 
   // --- FILTER ARTIKEL ---
-  const keyword = searchKeyword.trim().toLowerCase()
+  const newsKeyword = newsSearchKeyword.trim().toLowerCase()
   const normalizedSelectedNews = (selectedNewsCategory || 'all').toLowerCase().trim()
 
   const filteredByCategory =
@@ -110,11 +110,11 @@ export default function Home() {
           (a) => (a.category?.toLowerCase().trim() ?? '') === normalizedSelectedNews,
         )
 
-  const filteredArticles = keyword
+  const filteredArticles = newsKeyword
     ? filteredByCategory.filter(
         (a) =>
-          a.title.toLowerCase().includes(keyword) ||
-          (a.description?.toLowerCase().includes(keyword) ?? false),
+          a.title.toLowerCase().includes(newsKeyword) ||
+          (a.description?.toLowerCase().includes(newsKeyword) ?? false),
       )
     : filteredByCategory
 
@@ -126,23 +126,23 @@ export default function Home() {
   )
 
   // --- FILTER & PAGINATION KURSUS ---
-  const normalizedSelectedCourse = (selectedCourseCategory || 'all').toLowerCase().trim();
-const courseKeyword = searchKeyword.trim().toLowerCase();
+  const normalizedSelectedCourse = (selectedCourseCategory || 'all').toLowerCase().trim()
+  const courseKeyword = courseSearchKeyword.trim().toLowerCase()
 
   const filteredCourseByCategory =
     normalizedSelectedCourse === 'all'
       ? courses
       : courses.filter(
-        (c) => slugify(c.course_category ?? '') === normalizedSelectedCourse,
+          (c) => slugify(c.course_category ?? '') === normalizedSelectedCourse,
         )
 
-        const filteredCourses = courseKeyword
-        ? filteredCourseByCategory.filter(
-            (c) =>
-              c.title.toLowerCase().includes(courseKeyword) ||
-              (c.description?.toLowerCase().includes(courseKeyword) ?? false),
-          )
-        : filteredCourseByCategory
+  const filteredCourses = courseKeyword
+    ? filteredCourseByCategory.filter(
+        (c) =>
+          c.title.toLowerCase().includes(courseKeyword) ||
+          (c.description?.toLowerCase().includes(courseKeyword) ?? false),
+      )
+    : filteredCourseByCategory
 
   const totalCoursePages = Math.max(1, Math.ceil(filteredCourses.length / ITEMS_PER_PAGE))
   const courseStartIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE
@@ -154,7 +154,7 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
   // Reset halaman saat ganti filter
   useEffect(() => {
     setCurrentArticlePage(1)
-  }, [selectedNewsCategory, searchKeyword])
+  }, [selectedNewsCategory, newsSearchKeyword])
 
   useEffect(() => {
     setCurrentCoursePage(1)
@@ -185,11 +185,11 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
     )
   }
 
-  // Search bar: garis + glow saat fokus & ketika mengetik
-  const searchActive = keyword.length > 0
-  const searchWrapperClass = [
+  // Search bar artikel: garis + glow saat fokus & ketika mengetik
+  const newsSearchActive = newsKeyword.length > 0
+  const newsSearchWrapperClass = [
     'flex items-center bg-white rounded-full px-6 py-3 w-[554px] max-w-[90vw] border transition-all duration-200',
-    searchActive ? 'border-blue-500 ring-2 ring-blue-500 shadow-md' : 'border-gray-300',
+    newsSearchActive ? 'border-blue-500 ring-2 ring-blue-500 shadow-md' : 'border-gray-300',
     'focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:shadow-md',
   ].join(' ')
 
@@ -204,9 +204,9 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
 
   return (
     <>
-      {/* Search */}
+      {/* Search artikel */}
       <div className="flex flex-col items-center mt-16 space-y-12">
-        <div className={searchWrapperClass}>
+        <div className={newsSearchWrapperClass}>
           <Image
             src="/search.svg"
             width={24}
@@ -218,8 +218,8 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
             type="text"
             placeholder="Cari Artikel"
             className="outline-none text-gray-700 text-lg font-light w-full bg-transparent"
-            value={searchKeyword}
-            onChange={(e) => setSearchKeyword(e.target.value)}
+            value={newsSearchKeyword}
+            onChange={(e) => setNewsSearchKeyword(e.target.value)}
           />
         </div>
       </div>
@@ -381,7 +381,7 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
         Tidak ada artikel yang cocok
       </p>
       <p className="col-span-full text-center text-sm text-gray-500">
-        Coba ubah kata kunci atau pilih kategori lain.
+      Coba ubah kata kunci atau pilih kategori lain.
       </p>
     </>
   )}
@@ -406,7 +406,7 @@ const courseKeyword = searchKeyword.trim().toLowerCase();
         {/* Join Our Learning Journey */}
         <div className="w-full py-16 bg-gray-50 -mx-4 px-4">
           <div className="max-w-6xl mx-auto">
-          <div className="flex justify-center mb-12">
+            <div className="flex justify-center mb-12">
               <div className={courseSearchWrapperClass}>
                 <Image
                   src="/search.svg"

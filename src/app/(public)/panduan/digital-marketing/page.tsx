@@ -56,80 +56,80 @@ function DigitalMarketingPage({
         height={24}
         alt="Search Icon"
         className="mr-3"
-      />
-      <input
-        type="text"
-        placeholder="Pencarian"
-        className="w-full text-lg font-light text-gray-700 bg-transparent outline-none focus:outline-none"
-        value={searchKeyword}
-        onChange={(e) => setSearchKeyword(e.target.value)}
-      />
+        />
+        <input
+          type="text"
+          placeholder="Pencarian"
+          className="w-full text-lg font-light text-gray-700 bg-transparent outline-none focus:outline-none"
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+        />
+      </div>
     </div>
-  </div>
-
-        {/* Category Header */}
-        <div className="container mx-auto px-4 mt-16">
-          <div className="max-w-[800px] mx-auto text-center">
-            <span className="text-sm font-medium text-black-500 mb-2 block">Kategori</span>
-            <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-4">
-              Digital Marketing
-            </h1>
-            <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
-            Temukan berbagai wawasan seputar dunia digital marketing, mulai dari strategi pemasaran online, tren terbaru, hingga tools yang wajib dikuasai.
-            Dapatkan informasi eksklusif serta kisah inspiratif dari para praktisi dan ahli di bidang digital marketing.
-            </p>
-          </div>
-
-          {/* Articles Grid */}
-          {paginatedArticles.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-              {paginatedArticles.map((article, index) => (
-                <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                  <div className="relative h-48 w-full">
-                    <SafeImage
-                      src={article.image_url ?? ''}
-                      alt={article.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center mb-4">
-                      <span className="text-sm text-gray-500">{article.date}</span>
+  
+          {/* Category Header */}
+          <div className="container mx-auto px-4 mt-16">
+            <div className="max-w-[800px] mx-auto text-center">
+              <span className="text-sm font-medium text-black-500 mb-2 block">Kategori</span>
+              <h1 className="text-6xl font-bold text-gray-900 leading-tight mb-4">
+                Digital Marketing
+              </h1>
+              <p className="text-gray-600 mb-12 text-base font-normal leading-[1.8]">
+              Temukan berbagai wawasan seputar dunia digital marketing, mulai dari strategi pemasaran online, tren terbaru, hingga tools yang wajib dikuasai.
+              Dapatkan informasi eksklusif serta kisah inspiratif dari para praktisi dan ahli di bidang digital marketing.
+              </p>
+            </div>
+  
+            {/* Articles Grid */}
+            {paginatedArticles.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                {paginatedArticles.map((article, index) => (
+                  <div key={index} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    <div className="relative h-48 w-full">
+                      <SafeImage
+                        src={article.image_url ?? ''}
+                        alt={article.title}
+                        fill
+                        className="object-cover"
+                      />
                     </div>
-                    <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                    <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
-                    <Link href={`/blog/${article.slug}`} className="text-blue-600 hover:text-blue-800 font-medium">
-                      Baca Selengkapnya →
-                    </Link>
+                    <div className="p-6">
+                      <div className="flex items-center mb-4">
+                        <span className="text-sm text-gray-500">{article.date}</span>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
+                      <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>
+                      <Link href={`/blog/${article.slug}`} className="text-blue-600 hover:text-blue-800 font-medium">
+                        Baca Selengkapnya →
+                      </Link>
+                    </div>
                   </div>
-                  </div>
-              ))}
+                ))}
+              </div>
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+                {searchKeyword && (
+                  <p className="text-gray-400 mt-2">
+                    Coba kata kunci lain atau hapus filter pencarian.
+                  </p>
+                )}
+              </div>
+            )}
+                  
+  
+            {/* Pagination */}
+            <div className="mt-8">
+              <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
             </div>
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
-              {searchKeyword && (
-                <p className="text-gray-400 mt-2">
-                  Coba kata kunci lain atau hapus filter pencarian.
-                </p>
-              )}
-            </div>
-          )}
-                
-
-          {/* Pagination */}
-          <div className="mt-8">
-            <Pagination 
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
           </div>
-        </div>
-      </main>
-    </>
-  )
-}
-
-export default withCategory(DigitalMarketingPage, 'Digital Marketing');
+        </main>
+      </>
+    )
+  }
+  
+  export default withCategory(DigitalMarketingPage, 'Digital Marketing');

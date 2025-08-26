@@ -77,7 +77,7 @@ export default function MelamarKerjaPage() {
         height={24}
         alt="Search Icon"
         className="mr-3"
-      />
+        />
       <input
         type="text"
         placeholder="Pencarian"
@@ -102,46 +102,54 @@ export default function MelamarKerjaPage() {
           </div>
 
           {/* Article Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {loading ? (
-              <LoadingArticles />
-            ) : error ? (
-              <ErrorMessage message={error} />
-            ) : currentArticles.map((article) => (
-              <div key={article.id} className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative h-48">
-                  <SafeImage
-                    src={article.image_url ?? ''}
-                    alt={article.title}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
-                      {article.category}
-                    </span>
-                    <span className="text-sm text-gray-500">{article.date}</span>
+          {loading ? (
+            <LoadingArticles />
+          ) : error ? (
+            <ErrorMessage message={error} />
+          ) : filteredArticles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {currentArticles.map((article) => (
+                <div
+                  key={article.id}
+                  className="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
+                >
+                  <div className="relative h-48">
+                    <SafeImage
+                      src={article.image_url ?? ''}
+                      alt={article.title}
+                      fill
+                      className="object-contain"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{article.title}</h3>
-                  <p className="text-gray-600 mb-4">{article.description}</p>
-                  <Link href={`/blog/${article.slug}`} className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800">
-                    Baca Selengkapnya →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="col-span-full text-center py-12">
-                    <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
-                    {searchKeyword && (
-                      <p className="text-gray-400 mt-2">
-                        Coba kata kunci lain atau hapus filter pencarian.
-                      </p>
-                    )}
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="inline-block bg-gray-100 text-sm font-medium px-3 py-1 rounded-full">
+                        {article.category}
+                      </span>
+                      <span className="text-sm text-gray-500">{article.date}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{article.title}</h3>
+                    <p className="text-gray-600 mb-4">{article.description}</p>
+                    <Link
+                      href={`/blog/${article.slug}`}
+                      className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                    >
+                      Baca Selengkapnya →
+                    </Link>
                   </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg">Tidak ada artikel yang ditemukan.</p>
+              {searchKeyword && (
+                <p className="text-gray-400 mt-2">
+                  Coba kata kunci lain atau hapus filter pencarian.
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Pagination */}
           {!loading && !error && (
