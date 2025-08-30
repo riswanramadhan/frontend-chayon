@@ -2,8 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-
-type PageProps<T> = { params: Promise<T> }
+import type { PageProps } from '@/types/page'
 
 type CourseRow = {
   title: string
@@ -21,7 +20,7 @@ const supabase = createClient(
 )
 
 export async function generateMetadata({ params }: PageProps<{ course_slug: string }>): Promise<Metadata> {
-  const { course_slug } = await params
+   const { course_slug } = params
   const { data } = await supabase
     .from('courses')
     .select('title,image_url,description')
