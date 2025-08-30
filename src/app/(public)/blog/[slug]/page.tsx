@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
-import type { PageProps } from '@/types/page'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,8 +24,12 @@ const getCategoryChipClass = (name?: string | null) => {
   return categoryStyleMap[key] ?? 'bg-gray-100 text-gray-800'
 }
 
-export async function generateMetadata({ params }: PageProps<{ slug: string }>): Promise<Metadata> {
-  const { slug } = params
+type Props = {
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
   const { data } = await supabase
     .from('news')
     .select('title,image_url') // kategori tidak wajib untuk metadata
@@ -39,8 +42,8 @@ export async function generateMetadata({ params }: PageProps<{ slug: string }>):
   }
 }
 
-export default async function Page({ params }: PageProps<{ slug: string }>) {
-  const { slug } = params
+export default async function Page({ params }: Props) {
+  const { slug } = await params
   const { data } = await supabase
     .from('news')
     .select('*') // pastikan kolom `category` memang ada di tabel news

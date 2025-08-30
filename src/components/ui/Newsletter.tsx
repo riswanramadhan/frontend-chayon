@@ -33,12 +33,12 @@ export function Newsletter() {
         .from('newsletter_subscribers')
         .insert({ email: trimmed })
         .select('id')
-        .single();
-  
+        .single<{ id: number }>();
+
       if (insertError) {
         // Deteksi duplicate (email sudah ada) → anggap sukses
-        const code = (insertError as any)?.code as string | undefined;
-        if (code === '23505' || /duplicate key value/i.test((insertError as any)?.message ?? '')) {
+        const code = insertError.code
+        if (code === '23505' || /duplicate key value/i.test(insertError.message)) {
           // Sudah tersimpan sebelumnya → sukses juga
           setSuccess(true);
           setEmail('');
@@ -49,11 +49,11 @@ export function Newsletter() {
   
         // Log detail error supaya kelihatan di console dev
         console.error('Subscribe error detail:', {
-          message: (insertError as any)?.message,
-          details: (insertError as any)?.details,
-          hint: (insertError as any)?.hint,
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
           code,
-        });
+        })
         setError('Maaf, terjadi kendala. Coba lagi sebentar ya.');
         setLoading(false);
         return;

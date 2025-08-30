@@ -2,7 +2,6 @@ import { createClient } from '@supabase/supabase-js'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import type { PageProps } from '@/types/page'
 
 type CourseRow = {
   title: string
@@ -19,8 +18,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function generateMetadata({ params }: PageProps<{ course_slug: string }>): Promise<Metadata> {
-   const { course_slug } = params
+type Props = {
+  params: Promise<{ course_slug: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { course_slug } = await params
   const { data } = await supabase
     .from('courses')
     .select('title,image_url,description')
@@ -46,7 +49,7 @@ function formatIDR(n?: number | null) {
   }).format(n)
 }
 
-export default async function Page({ params }: PageProps<{ course_slug: string }>) {
+export default async function Page({ params }: Props) {
   const { course_slug } = await params
   const { data } = await supabase
     .from('courses')
