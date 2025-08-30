@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Newsletter } from '@/components/ui/Newsletter'
 
 export default function AboutPage() {
   return (
@@ -13,7 +12,7 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="flex flex-col justify-center">
-                <h3 className="text-sm uppercase tracking-wider mb-2">TENTANG KAMI</h3>
+                <h3 className="text-sm uppercase tracking-wide mb-2">TENTANG KAMI</h3>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
                   We are a team of content writers who share their learnings
                 </h1>
@@ -192,7 +191,7 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <Newsletter />
+      
     </>
   );
 }

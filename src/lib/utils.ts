@@ -29,14 +29,20 @@ export function getPageCount(totalItems: number, itemsPerPage: number = 9): numb
   return Math.ceil(totalItems / itemsPerPage);
 }
 
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric'
-  }).format(date);
+// Tanggal saja (DD MMMM YYYY), aman untuk ISO Supabase (dengan mikrodetik) & default UTC
+export function formatDate(dateInput?: string | Date | null, useUTC = true): string {
+  if (!dateInput) return "";
+  const iso = typeof dateInput === "string" ? dateInput.replace(/(\.\d{3})\d+/, "$1") : dateInput.toISOString();
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",  // ganti ke "short" jika mau singkat (Agu, Sep, dst)
+    year: "numeric",
+    ...(useUTC ? { timeZone: "UTC" } : {}),
+  }).format(d);
 }
+
 
 export function formatIDR(amount: number): string {
   return new Intl.NumberFormat('id-ID', {

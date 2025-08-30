@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import { formatDate } from '@/lib/utils'
 import type { Metadata } from 'next'
 
+type PageProps<T> = { params: Promise<T> }
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -24,11 +26,12 @@ const getCategoryChipClass = (name?: string | null) => {
   return categoryStyleMap[key] ?? 'bg-gray-100 text-gray-800'
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<{ slug: string }>): Promise<Metadata> {
+  const { slug } = await params
   const { data } = await supabase
     .from('news')
     .select('title,image_url') // kategori tidak wajib untuk metadata
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
   if (!data) return { title: 'Berita' }
   return {
@@ -37,11 +40,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page({ params }: PageProps<{ slug: string }>) {
+  const { slug } = await params
   const { data } = await supabase
     .from('news')
     .select('*') // pastikan kolom `category` memang ada di tabel news
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
 
   if (!data) notFound()

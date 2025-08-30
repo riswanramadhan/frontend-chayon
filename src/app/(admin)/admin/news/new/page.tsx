@@ -7,6 +7,7 @@ import { AdminGuard } from '@/components/AdminGuard'
 import CategorySelect from '@/components/CategorySelect'
 import { NEWS_CATEGORIES } from '@/lib/constants'
 import UploadImage from '@/components/UploadImage'
+import RichTextEditor from '@/components/RichTextEditor'
 
 export default function NewNewsPage() {
   const supabase = createClient()
@@ -63,12 +64,7 @@ export default function NewNewsPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <textarea
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[200px]"
-            placeholder="Konten (markdown/HTML bebas)"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <RichTextEditor value={content} onChange={setContent} />
           <div className="flex gap-2">
             <button
               type="submit"

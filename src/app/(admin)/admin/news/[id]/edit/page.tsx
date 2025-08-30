@@ -7,6 +7,7 @@ import { AdminGuard } from '@/components/AdminGuard'
 import CategorySelect from '@/components/CategorySelect'
 import { NEWS_CATEGORIES } from '@/lib/constants'
 import UploadImage from '@/components/UploadImage'
+import RichTextEditor from '@/components/RichTextEditor'
 
 type Row = {
   id: string
@@ -103,11 +104,9 @@ export default function EditNewsPage() {
             value={row.description ?? ''}
             onChange={(e) => setRow({ ...row, description: e.target.value })}
           />
-          <textarea
-            className="w-full rounded-xl border border-white/20 bg-transparent p-3 min-h-[200px]"
-            placeholder="Konten"
+           <RichTextEditor
             value={row.content ?? ''}
-            onChange={(e) => setRow({ ...row, content: e.target.value })}
+            onChange={(v) => setRow({ ...row, content: v })}
           />
           <div className="flex gap-2">
             <button

@@ -7,14 +7,15 @@ import { SafeImage } from './SafeImage'
 
 import CategoryBar from './CategoryBar'
 import { ArticleCard } from './ArticleCard'
-import { Newsletter } from './ui/Newsletter'
 import { ErrorMessage } from './ui/ErrorMessage'
 import { Pagination } from './ui/Pagination'
+import { Newsletter } from './ui/Newsletter'
 import { LoadingArticles } from './ui/LoadingArticles'
 import type { Article, Course } from '@/lib/api'
 import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
 import { slugify } from '@/lib/slug'
 import { formatIDR } from '@/lib/utils'
+
 
 const categoryImageMap: Record<string, string> = {
   'Digital Marketing': 'keyboard.svg',
