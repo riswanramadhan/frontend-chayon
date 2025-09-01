@@ -7,6 +7,7 @@ import { Pagination } from '@/components/ui/Pagination'
 import { withCategory } from '@/components/withCategory'
 import { SafeImage } from '@/components/SafeImage'
 import Image from 'next/image'
+import { formatDate } from '@/lib/utils'
 
 interface UIUXDesignPageProps {
   articles: Article[];
@@ -95,7 +96,7 @@ function UIUXDesignPage({
                     </div>
                     <div className="p-6">
                       <div className="flex items-center mb-4">
-                        <span className="text-sm text-gray-500">{article.date}</span>
+                        <span className="text-sm text-gray-500">{formatDate(article.date)}</span>
                       </div>
                       <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
                       <p className="text-gray-600 mb-4 line-clamp-3">{article.description}</p>

@@ -5,6 +5,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin', label: 'Dashboard' },
     { href: '/admin/news', label: 'Berita' },
     { href: '/admin/courses', label: 'Kursus' },
+    { href: '/admin/subscribers', label: 'Subscribers' },
   ]
   return (
     <div className="min-h-screen bg-[#0b0b0b] text-white">

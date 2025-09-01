@@ -15,7 +15,7 @@ import type { Article, Course } from '@/lib/api'
 import { getAllArticles, getAllCourses, getCategories } from '@/lib/api'
 import { slugify } from '@/lib/slug'
 import { formatIDR } from '@/lib/utils'
-
+import { formatDate } from '@/lib/utils'
 
 const categoryImageMap: Record<string, string> = {
   'Digital Marketing': 'keyboard.svg',
@@ -281,7 +281,7 @@ export default function Home() {
                           {mainArticle.category}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {mainArticle.date}
+                          {formatDate(mainArticle.date)}
                         </span>
                       </div>
                       <h3 className="text-2xl font-bold mb-4">
